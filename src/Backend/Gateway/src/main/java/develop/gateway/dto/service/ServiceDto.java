@@ -4,7 +4,7 @@ import develop.gateway.dto.BaseDto;
 import jakarta.validation.constraints.NotBlank;
 
 public enum ServiceDto {;
-    private interface Message { @NotBlank String message();}
+    protected interface Message { @NotBlank String message();}
 
     public enum Request {;
         public record Public(String message) implements Message {

@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "api/gateway/service")
 public class MainServiceGateController {
+    // пререквизиты: у пользователя должен быть идетификатор сессии (будет отдельный сервис, который проверяет его)
     @PostMapping
     @ResponseBody
-    public ServiceDto.Request.Public serviceEndpoint(@RequestBody  ServiceDto.Request.Public request) {
-        // check rights
+    public ServiceDto.Request.Public serviceEndpoint(@RequestBody ServiceDto.Request.Public request) {
+        // отправить в прокси, который разберётся, в какой сервис отдать
+        // сервисы будут раскидывать сообщения в определённые топики кафки
         return new ServiceDto.Request.Public("Hello World");
     }
 }
