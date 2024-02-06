@@ -9,9 +9,10 @@
    4. Open `index.html` -- example for how to import generated JS code into html
    5. Можно удалить `plaginManagement`, инфу об авторах, лицензии и т.п.
 ## 2. Завести реакт приложение:
-   1. Выполнить команду:
+   1. Выполнить команды:
    ```
-   npx create-react-app my-app
+   npx create-next-app react-project --ts
+   npm install react-bootstrap bootstrap
    ```
 ## 3. Подружить `JSweet` и `React`:
    1. Перебрасываем файл из /target/js/package в папку /reactApp/src/package

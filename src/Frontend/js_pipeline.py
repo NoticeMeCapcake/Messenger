@@ -4,7 +4,7 @@ import os
 if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
     work_dir = Path(current_dir + "\\target\\js").__str__()
-    src_dir = Path(current_dir + "\\react_project\\src").__str__()
+    src_dir = Path(current_dir + "\\react-app\\src").__str__()
     p = Path(work_dir)
     for file in p.rglob("*.js"):
         file_trimmed = file.__str__().removeprefix(work_dir)
