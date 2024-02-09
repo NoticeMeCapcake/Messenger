@@ -1,3 +1,4 @@
+"use client"
 import * as React from 'react';
 import ChatMessage from "../../dto/ChatMessage";
 
@@ -5,7 +6,7 @@ interface Props {
     messages: ChatMessage[];
 }
 
-export const MessageList  = ({messages}: Props) => {
+const MessageList  = ({messages}: Props) => {
     return (
         <ul className="message-list">
             {messages.map(message => {
@@ -23,3 +24,5 @@ export const MessageList  = ({messages}: Props) => {
         </ul>
     )
 }
+
+export default MessageList;
