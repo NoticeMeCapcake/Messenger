@@ -1,9 +1,9 @@
 "use client"
 import * as React from 'react';
-import ChatMessage from "../../dto/ChatMessage";
+import IChatMessage from "../../dto/IChatMessage";
 
 interface Props {
-    messages: ChatMessage[];
+    messages: IChatMessage[];
 }
 
 const MessageList  = ({messages}: Props) => {

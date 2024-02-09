@@ -1,4 +1,4 @@
-export default class ChatInfoDto {
+export default interface ChatInfoDto {
     id: number;
     name: string;
     lastMessage: string;

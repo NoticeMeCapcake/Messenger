@@ -1,7 +1,7 @@
-type ChatMessage = {
+interface IChatMessage {
     id: number;
     senderId: string;
     text: string;
 }
 
-export default ChatMessage;
+export default IChatMessage;
