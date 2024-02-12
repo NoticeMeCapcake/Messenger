@@ -2,8 +2,9 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./globals.css"
 
-import TryShit from "@/components/TryShit";
+import AppLayout from "@/components/AppLayout";
 
 
 let id = 1;
@@ -14,7 +15,7 @@ let senderName = "templateName"
 
 export default async function Home() {
     return <main>
-        <TryShit/>
+        <AppLayout/>
     </main>
   // return (
   //   <main className="container-fluid bg-black">
