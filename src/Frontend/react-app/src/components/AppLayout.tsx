@@ -5,7 +5,8 @@ import MessageList from "@/components/MessageList/MessageList";
 import IChatMessage from "@/dto/IChatMessage";
 import {useState} from "react";
 import {Title} from "@/components/ChatHeader/Title";
-import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm"; // Import bootstrap CSS
+import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm";
+import {SideMenu} from "@/components/SideMenu/SideMenu"; // Import bootstrap CSS
 
 
 let id = 1;
@@ -21,25 +22,38 @@ export default function AppLayout() {
         <div className="container-fluid bg-dark">
             <div className="row">
                 <div className="col-3 bg-dark" style={{height: "100vh"}}>
-                    <DialogueArea clickAction={(tag: string): void => {
-                        console.log(tag);
-                        setMessages([...messages, {id: id, isFromUser: false, senderId: senderName, text: tag}]);
-                        console.log(messages)
-                    }}></DialogueArea>
+                    <div className="dark-bg" style={{height: "6%", minHeight: "48px"}}>
+                        <SideMenu/>
+                    </div>
+                    <div style={{height: "94%"}}>
+                        <DialogueArea clickAction={(tag: string): void => {
+                            console.log(tag);
+                            setMessages([...messages, {id: id, isFromUser: false, senderId: senderName, text: tag}]);
+                            console.log(messages)
+                        }}></DialogueArea>
+                    </div>
                 </div>
                 <div className="col-9 row">
-                    <div className="col-12">
+                    <div className="col-12 align-self-start">
                         <Title chatName={senderName}/>
                     </div>
-                    <div className="col-12">
+                    <div className="col-12 align-self-end">
                         <MessageList messages={messages}/>
                     </div>
-                    <div className="col-12">
-                        <SendMessageForm initialText={''} sendMessage={(text: string): void => {
-                            console.log(text)
-                            setMessages([...messages, {id: id, isFromUser: true, senderId: senderName, text: text}]);
-                            console.log(messages)
-                        }} />
+                    <div className="col-12 align-self-end">
+                        <div>
+
+                        </div>
+                        <div>
+                            <SendMessageForm initialText={''} sendMessage={(text: string): void => {
+                                console.log(text)
+                                setMessages([...messages, {id: id, isFromUser: true, senderId: "Me", text: text}]);
+                                console.log(messages)
+                            }} />
+                        </div>
+                        <div>
+
+                        </div>
                     </div>
                 </div>
             </div>

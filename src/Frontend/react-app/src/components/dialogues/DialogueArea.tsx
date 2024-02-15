@@ -13,10 +13,8 @@ const DialogueArea = (props: Props) => {
     return <ScrollArea.Root className="ScrollAreaRoot dark-bg">
         <ScrollArea.Viewport className="ScrollAreaViewport">
             <div style={{padding: '15px 20px'}}>
-                <img src={favicon.src} alt="Logo"/>
-
                 {TAGS.map((tag) => (
-                    <div className="tag light-hover py-2 cursor-pointer" key={tag} onClick={() => props.clickAction(tag)}>
+                    <div className="tag px-1 light-hover py-2 cursor-pointer" key={tag} onClick={() => props.clickAction(tag)}>
                         {tag}
                     </div>
                 ))}

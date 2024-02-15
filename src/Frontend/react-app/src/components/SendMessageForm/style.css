@@ -1,0 +1,59 @@
+.text-window {
+    background-color: #3d3d3d;
+    color: #d5d3da;
+    border-radius: 10px;
+    border: none;
+    word-break: break-all;
+}
+
+.submit-msg {
+    color: #d5d3da;
+    background: inherit;
+    border-radius: 20px;
+    border: none;
+}
+
+.auto-height {
+    height: 100%;
+    max-height: 300px;
+    resize: none;
+}
+
+.auto-height:focus {
+    outline: none;
+}
+
+/* width */
+.auto-height::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.auto-height::-webkit-scrollbar-track {
+    background: #232323;
+    border-radius: 8px;
+}
+
+/* Handle */
+.auto-height::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 8px;
+}
+
+/* Handle on hover */
+.auto-height::-webkit-scrollbar-thumb:hover {
+    background: #555;
+
+}
+
+.custom-icon {
+    width: 25px;
+    height: 25px;
+    stroke: #e3e0e8;
+    stroke-width: 0.3;
+}
+
+.submit-msg:hover > .custom-icon {
+    stroke: #f3f0f8;
+    color: #f3f0f8;
+}
