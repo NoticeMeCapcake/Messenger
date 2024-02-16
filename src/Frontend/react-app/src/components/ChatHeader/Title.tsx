@@ -1,18 +1,24 @@
 import {PersonIcon} from "@radix-ui/react-icons";
 import "./style.css"
 
-interface Props {
+interface IProps {
     chatName: string
 }
 
-export function Title(props: Props) {
+export function Title(props: IProps) {
     return (
-        <div className="row justify-content-start chat-title">
-            <div className="col-1">
-                <PersonIcon style={{width: 40, height: 40}}/>
+        <div className="row justify-content-start chat-title py-2 align-content-center">
+            <div className="col-auto row align-content-center">
+                <PersonIcon className="col" style={{width: 70, height: 70, borderRadius: "50%"}}/>
             </div>
             <div className="col-8">
-                {props.chatName}
+                {props.chatName}<br/>
+                <small style={{color: "#b8b8b8"}}>
+                    {"last seen 10 min ago"}
+                </small>/
+                <small style={{color: "#673db2"}}>
+                    {"online"}
+                </small>
             </div>
         </div>
     );

@@ -7,10 +7,11 @@ body {
   width: 100%;
   height: 100%;
   color: #e3e0e8;
+  font-size: 13pt;
 }
 
 .dark-bg {
-  background-color: #1e181f;
+  background-color: #211e21;
 }
 
 .light-hover {
@@ -22,7 +23,7 @@ body {
 }
 
 .light-bg {
-  background-color: #2e252f;
+  background-color: #503185;
 }
 
 .cursor-pointer {

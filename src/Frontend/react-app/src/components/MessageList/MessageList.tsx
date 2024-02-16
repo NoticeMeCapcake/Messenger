@@ -3,20 +3,12 @@ import * as React from 'react';
 import IChatMessage from "../../dto/IChatMessage";
 import {useState} from "react";
 import {PersonIcon} from "@radix-ui/react-icons";
+import "./style.css"
+// import "../dialogues/style.css"
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 interface IProps {
     messages: IChatMessage[];
-}
-
-const tryGetSenderName = (senderId: string, prevSenderId: IState) => {
-    console.log(senderId + "     " + prevSenderId);
-    if (senderId === prevSenderId.senderId) {
-        return <div>
-            {senderId}
-        </div>;
-    }
-    prevSenderId.senderId = senderId
-    return <div/>
 }
 
 interface IState {
@@ -24,22 +16,39 @@ interface IState {
 }
 
 const MessageList = ({messages}: IProps) => {
-    const [previousSenderId, setPreviousMessageSenderId] = useState<IState>({senderId: '-1'})
+    // const [previousSenderId, setPreviousMessageSenderId] = useState<IState>({senderId: '-1'})
     console.warn(messages.length)
+
+    const tryGetSenderName = (message: IChatMessage, prevSenderId: string | undefined) => {
+        console.debug(message.senderId + "     " + prevSenderId + "     " + (message.senderId === prevSenderId));
+        return message.senderId === prevSenderId || message.isFromUser ? null : <div> {message.senderId} </div>;
+    }
+
+
     return (
-        <div className="light-bg">
-            {messages.map(message => {
-                return <div key={message.id} className={(message.isFromUser ? "text-end " : "") + "dark-bg my-2 row justify-content-start"}>
-                    <div className="col-auto">
-                        <PersonIcon/>
-                    </div>
-                    <div className="col-10">
-                        <div>{message.senderId}</div>
-                        <div>{message.text}</div>
-                    </div>
-                </div>;
-            })}
-        </div>
+            <ScrollArea.Root className="ScrollAreaRoot">
+                <ScrollArea.Viewport className="ScrollAreaViewport">
+                    {messages.map((message, index) =>
+                        <div key={message.id} className={"my-2 row justify-content-start"}>
+
+                            <div className={"col-7 row py-2" + (message.isFromUser ? " offset-4" : " offset-1")}>
+                                {message.isFromUser ? null :
+                                    <div className="">
+                                        <PersonIcon/>
+                                    </div>}
+                                <div className={"text-container py-1" + (message.isFromUser ? " light-bg" : " dark-bg-msg")}>
+                                    <small style={{color: "#b436c1"}}>{tryGetSenderName(message, messages[index - 1]?.senderId)}</small>
+                                    <div>{message.text}</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </ScrollArea.Viewport>
+                <ScrollArea.Scrollbar className="ScrollAreaScrollbar" orientation="vertical">
+                    <ScrollArea.Thumb className="ScrollAreaThumb"/>
+                </ScrollArea.Scrollbar>
+                <ScrollArea.Corner className="ScrollAreaCorner"/>
+            </ScrollArea.Root>
     )
 }
 

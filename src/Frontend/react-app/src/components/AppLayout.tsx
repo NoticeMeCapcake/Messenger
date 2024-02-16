@@ -19,9 +19,9 @@ export default function AppLayout() {
     const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
 
     return (
-        <div className="container-fluid bg-dark">
-            <div className="row">
-                <div className="col-3 bg-dark" style={{height: "100vh"}}>
+        <div className="container-fluid px-0" style={{backgroundColor:  "#1a181b"}}>
+            <div className="row w-100 h-100">
+                <div className="col-3 bg-dark px-0" style={{height: "100vh"}}>
                     <div className="dark-bg" style={{height: "6%", minHeight: "48px"}}>
                         <SideMenu/>
                     </div>
@@ -33,17 +33,14 @@ export default function AppLayout() {
                         }}></DialogueArea>
                     </div>
                 </div>
-                <div className="col-9 row">
-                    <div className="col-12 align-self-start">
+                <div className="col-9 row px-5">
+                    <div className="col-12 align-self-start px-0">
                         <Title chatName={senderName}/>
                     </div>
-                    <div className="col-12 align-self-end">
+                    <div className="col-12 align-self-start px-0" style={{height: "50%"}}>
                         <MessageList messages={messages}/>
                     </div>
-                    <div className="col-12 align-self-end">
-                        <div>
-
-                        </div>
+                    <div className="col-12 align-self-end px-0">
                         <div>
                             <SendMessageForm initialText={''} sendMessage={(text: string): void => {
                                 console.log(text)

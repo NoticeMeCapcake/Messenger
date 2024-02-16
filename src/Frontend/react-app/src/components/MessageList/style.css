@@ -1,6 +1,20 @@
-@import '@radix-ui/colors/black-alpha.css';
-@import '@radix-ui/colors/mauve.css';
 @import '@radix-ui/colors/violet.css';
+@import '@radix-ui/colors/mauve.css';
+@import '@radix-ui/colors/black-alpha.css';
+
+.text-container {
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    word-break: break-all;
+    border-radius: 15px;
+    min-width: 100px;
+    max-width: 60%;
+}
+
+.dark-bg-msg {
+    background-color: #3b3a39;
+}
 
 .ScrollAreaRoot {
     width: 100%;

@@ -1,6 +1,6 @@
 'use client'
 
-import {FormEvent, ReactNode, useState} from "react";
+import {ChangeEvent, KeyboardEvent, SyntheticEvent, UIEvent, useRef, useState} from "react";
 import {FaceIcon, FilePlusIcon, PaperPlaneIcon} from "@radix-ui/react-icons"
 import "./style.css";
 import Tooltip from "@/components/Tooltip/Tooltip";
@@ -11,25 +11,43 @@ interface IProps {
     sendMessage:  (text: string) => void
 }
 
-function auto_height(event: FormEvent<HTMLTextAreaElement>) {
-    console.log(event.currentTarget.scrollHeight);
-    event.currentTarget.style.height = '1px';
-    event.currentTarget.style.height = event.currentTarget.scrollHeight + 'px';
-}
 
 export const SendMessageForm = (props: IProps) => {
+    const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const [text, setText] = useState(props.initialText);
+
+    const handleTextChange = (event:  ChangeEvent<HTMLTextAreaElement>) => {
+        setText(event.target.value);
+        const textArea = inputRef.current;
+        if (!textArea) return;
+        console.log(event.currentTarget.scrollHeight);
+        textArea.style.height = 'auto';
+        textArea.style.height = `${event.currentTarget.scrollHeight}px`;
+    }
+
+    const submitOnEnter = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault(); // Prevents the addition of a new line in the text field
+            if (!event.repeat) {
+                handleSubmitForm(event);
+            }
+        }
+    }
+
+    const handleSubmitForm = (event: SyntheticEvent<HTMLElement>) => {
+        event.preventDefault();
+        if (!text.trim()) return;
+        props.sendMessage(text);
+        setText("");
+        const textArea = inputRef.current;
+        if (!textArea) return;
+        textArea.style.height;
+    }
+
     return (
         <form
             className="send-message-form"
-            onSubmit={event => {
-                event.preventDefault();
-                if (text === "") {
-                    return
-                }
-                props.sendMessage(text);
-                setText("")
-            }}>
+            onSubmit={handleSubmitForm}>
             <div className="row justify-content-center align-items-center my-2 ">
                 <div className="text-window col-10 row align-items-center py-1">
                     <div className="col-auto px-0 align-self-end">
@@ -45,10 +63,10 @@ export const SendMessageForm = (props: IProps) => {
                     </div>
                     <div className="col-11 row align-items-center">
                         <textarea
-                            onChange={event => setText(event.target.value)}
+                            onChange={handleTextChange}
                             value={text}
                             rows={1}
-                            onInput={(e) => auto_height(e)}
+                            onKeyDown={submitOnEnter}
                             placeholder="Type your message and hit ENTER"
                             className="auto-height text-window w-100 p-1"/>
                     </div>

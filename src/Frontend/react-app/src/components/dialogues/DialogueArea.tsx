@@ -2,7 +2,6 @@
 import React, {useState} from 'react';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import "./style.css";
-import favicon from "@/../public/favicon-32x32.png"
 
 const TAGS = Array.from({ length: 50 }).map((_, i, a) => `Chat:1.${a.length - i}`);
 
