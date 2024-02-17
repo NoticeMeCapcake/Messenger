@@ -6,7 +6,8 @@ import IChatMessage from "@/dto/IChatMessage";
 import {useState} from "react";
 import {Title} from "@/components/ChatHeader/Title";
 import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm";
-import {SideMenu} from "@/components/SideMenu/SideMenu"; // Import bootstrap CSS
+import {SideMenu} from "@/components/SideMenu/SideMenu";
+import GroupSelector from "@/components/GroupSelector/GroupSelector"; // Import bootstrap CSS
 
 
 let id = 1;
@@ -21,11 +22,14 @@ export default function AppLayout() {
     return (
         <div className="container-fluid px-0" style={{backgroundColor:  "#1a181b"}}>
             <div className="row w-100 h-100">
-                <div className="col-3 bg-dark px-0" style={{height: "100vh"}}>
-                    <div className="dark-bg" style={{height: "6%", minHeight: "48px"}}>
+                <div className="row col-3 bg-dark px-0" style={{height: "100vh"}}>
+                    <div className="dark-bg col-12 px-0" style={{height: "6%", minHeight: "48px"}}>
                         <SideMenu/>
                     </div>
-                    <div style={{height: "94%"}}>
+                    <div className="col-12 px-0">
+                        <GroupSelector/>
+                    </div>
+                    <div style={{height: "94%"}} className="col-12 px-0">
                         <DialogueArea clickAction={(tag: string): void => {
                             console.log(tag);
                             setMessages([...messages, {id: id, isFromUser: false, senderId: senderName, text: tag}]);
