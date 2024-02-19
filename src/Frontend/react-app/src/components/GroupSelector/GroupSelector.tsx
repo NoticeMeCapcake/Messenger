@@ -29,9 +29,9 @@ const GroupSelector = ({groupListSetter}: IProps) => {
     const handleClick = (key: string) => {
         groupListSetter(generateGroupList(groupMapper.get(key) ?? GroupType.All));
     }
-    return <small className="row" >
+    return <small className="row py-2" style={{borderBottom: "1px solid #3b3a39"}}>
         {Array.from(groupMapper).map(([key, value]) => {
-            return <div className="col-3 light-hover" onClick={e => handleClick(key)}>
+            return <div className="col-3 light-hover text-center cursor-pointer" onClick={e => handleClick(key)}>
                 {key}
             </div>
         })}

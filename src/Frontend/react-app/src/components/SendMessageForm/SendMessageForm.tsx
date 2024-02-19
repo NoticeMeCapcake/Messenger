@@ -1,6 +1,6 @@
 'use client'
 
-import {ChangeEvent, KeyboardEvent, SyntheticEvent, UIEvent, useRef, useState} from "react";
+import {ChangeEvent, KeyboardEvent, MutableRefObject, SyntheticEvent, UIEvent, useRef, useState} from "react";
 import {FaceIcon, FilePlusIcon, PaperPlaneIcon} from "@radix-ui/react-icons"
 import "./style.css";
 import Tooltip from "@/components/Tooltip/Tooltip";
@@ -8,13 +8,14 @@ import Tooltip from "@/components/Tooltip/Tooltip";
 
 interface IProps {
     initialText: string,
-    sendMessage:  (text: string) => void
+    sendMessage:  (text: string) => void,
+    adjustMessageListSize: () => void
 }
 
 
 export const SendMessageForm = (props: IProps) => {
-    const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const [text, setText] = useState(props.initialText);
+    const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
     const handleTextChange = (event:  ChangeEvent<HTMLTextAreaElement>) => {
         console.log("Text value:", event.target.value);
@@ -28,6 +29,7 @@ export const SendMessageForm = (props: IProps) => {
 
         textArea.style.height = 'auto';
         textArea.style.height = `${event.currentTarget.scrollHeight}px`;
+        props.adjustMessageListSize();
     }
 
     const submitOnEnter = (event: KeyboardEvent<HTMLTextAreaElement>) => {

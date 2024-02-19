@@ -18,7 +18,7 @@
 
 .ScrollAreaRoot {
     width: 100%;
-    height: calc(100vh - 145px);
+    height: 100%;
     overflow: hidden;
     /*box-shadow: 0 2px 10px var(--black-a7);*/
     --scrollbar-size: 10px;
