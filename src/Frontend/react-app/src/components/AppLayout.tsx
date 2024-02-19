@@ -16,8 +16,12 @@ let senderName = "templateName"
 
 // const messages: ChatMessage[] = [{id: id, senderId: senderName, text: message}]
 
+const initGroupList = Array.from({ length: 50 }).map((_, i, a) => `Chat:1.${a.length - i}`);
+
+
 export default function AppLayout() {
     const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
+    const [groupList, setGroupList] = useState<string[]>(initGroupList)
 
     return (
         <div className="container-fluid" style={{backgroundColor:  "#1a181b"}}>
@@ -27,14 +31,14 @@ export default function AppLayout() {
                         <SideMenu/>
                     </div>
                     <div className="">
-                        <GroupSelector/>
+                        <GroupSelector groupListSetter={setGroupList}/>
                     </div>
                     <div className="">
                         <DialogueArea clickAction={(tag: string): void => {
                             console.log(tag);
                             setMessages([...messages, {id: id, isFromUser: false, senderId: senderName, text: tag}]);
                             console.log(messages)
-                        }}></DialogueArea>
+                        }} groupList={groupList}></DialogueArea>
                     </div>
                 </div>
                 <div className="col-9">
