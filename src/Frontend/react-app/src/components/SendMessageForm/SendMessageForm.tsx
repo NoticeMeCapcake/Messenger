@@ -17,10 +17,15 @@ export const SendMessageForm = (props: IProps) => {
     const [text, setText] = useState(props.initialText);
 
     const handleTextChange = (event:  ChangeEvent<HTMLTextAreaElement>) => {
+        console.log("Text value:", event.target.value);
         setText(event.target.value);
         const textArea = inputRef.current;
-        if (!textArea) return;
-        console.log(event.currentTarget.scrollHeight);
+        if (!textArea) {
+            console.log("Textarea not found");
+            return;
+        }
+        console.log("Scroll height:", event.currentTarget.scrollHeight);
+
         textArea.style.height = 'auto';
         textArea.style.height = `${event.currentTarget.scrollHeight}px`;
     }
@@ -33,7 +38,6 @@ export const SendMessageForm = (props: IProps) => {
             }
         }
     }
-    // TODO: fix the height of the text area
 
     const handleSubmitForm = (event: SyntheticEvent<HTMLElement>) => {
         event.preventDefault();
@@ -66,6 +70,7 @@ export const SendMessageForm = (props: IProps) => {
                         <div className="col-11 align-self-center">
                             <div className="row align-items-center">
                                 <textarea
+                                    ref={inputRef}
                                     onChange={handleTextChange}
                                     value={text}
                                     rows={1}
