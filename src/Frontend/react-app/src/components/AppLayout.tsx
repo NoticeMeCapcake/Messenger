@@ -26,7 +26,8 @@ export default function AppLayout() {
     const titleRef = useRef<HTMLDivElement | null>(null);
     const inputContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const scrollToNewMessage = () => messageListRef.current?.scrollTo({top: messageListRef.current.scrollHeight, behavior: "smooth"}) // Scroll to bottom on new message
+    //TODO: change messageListRef to actual scroll area
+    const scrollToNewMessage = () => messageListRef.current?.scrollTo({top: 0, behavior: "smooth"}) // Scroll to bottom on new message
 
     const adjustMessageListSize = () => {
         const messageList = messageListRef.current;
@@ -38,6 +39,8 @@ export default function AppLayout() {
 
         messageList.style.height = `calc(100vh - ${titleRef.current?.clientHeight ?? 0}px - ${inputContainerRef.current?.clientHeight ?? 0}px - 20px)`;
         console.log(messageList.style.height);
+        scrollToNewMessage();
+        console.log("scrolled")
     }
 
     return (

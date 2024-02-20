@@ -48,7 +48,8 @@ export const SendMessageForm = (props: IProps) => {
         setText("");
         const textArea = inputRef.current;
         if (!textArea) return;
-        textArea.style.height;
+        textArea.style.height = "auto";
+        props.adjustMessageListSize();
     }
 
     return (
