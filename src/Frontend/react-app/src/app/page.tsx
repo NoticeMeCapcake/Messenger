@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css"
 
 import AppLayout from "@/components/AppLayout";
+import { Provider } from 'react-redux';
+// import { store } from '@/services/store/store';
 
 
 let id = 1;
@@ -12,9 +14,13 @@ let senderName = "templateName"
 // const messages: ChatMessage[] = [{id: id, senderId: senderName, text: message}]
 
 export default async function Home() {
-    return <main style={{width: "100vw", height: "100vh"}}>
-        <AppLayout/>
-    </main>
+    return (
+      // <Provider store={store}>
+        <main style={{width: "100vw", height: "100vh"}}>
+            <AppLayout/>
+        </main>
+      // </Provider>
+    )
   // return (
   //   <main className="container-fluid bg-black">
   //     <div className="row">
