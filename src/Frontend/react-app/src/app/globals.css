@@ -16,6 +16,7 @@ body {
 
 .light-hover {
   background-color: inherit;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .light-hover:hover {

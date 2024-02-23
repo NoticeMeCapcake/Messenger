@@ -7,7 +7,7 @@ interface IProps {
 
 export function Title(props: IProps) {
     return (
-        <div className="row justify-content-start chat-title py-2 align-content-center">
+        <div className="row justify-content-start chat-title dark-bg py-2 align-content-center">
             <div className="col-auto align-content-center">
                 <PersonIcon className="" style={{width: 70, height: 70, borderRadius: "50%"}}/>
             </div>

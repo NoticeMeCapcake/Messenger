@@ -39,6 +39,16 @@
 
 .ScrollAreaThumb {
     flex: 1;
+    background: #888;
+    border-radius: var(--scrollbar-size);
+    position: relative;
+}
+
+.ScrollAreaThumb:hover {
+    background: #555;
+}
+.ScrollAreaThumb:active {
+    flex: 1;
     background: var(--mauve-10);
     border-radius: var(--scrollbar-size);
     position: relative;

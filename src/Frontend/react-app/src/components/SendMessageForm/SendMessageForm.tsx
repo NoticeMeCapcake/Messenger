@@ -1,6 +1,15 @@
 'use client'
 
-import {ChangeEvent, KeyboardEvent, MutableRefObject, SyntheticEvent, UIEvent, useRef, useState} from "react";
+import {
+    ChangeEvent,
+    KeyboardEvent,
+    MutableRefObject,
+    SyntheticEvent,
+    UIEvent,
+    useEffect,
+    useRef,
+    useState
+} from 'react';
 import {FaceIcon, FilePlusIcon, PaperPlaneIcon} from "@radix-ui/react-icons"
 import "./style.css";
 import Tooltip from "@/components/Tooltip/Tooltip";
@@ -9,7 +18,8 @@ import Tooltip from "@/components/Tooltip/Tooltip";
 interface IProps {
     initialText: string,
     sendMessage:  (text: string) => void,
-    adjustMessageListSize: () => void
+    adjustMessageListSize: () => void,
+    scrollMessageListToBottom: () => void
 }
 
 
@@ -50,6 +60,7 @@ export const SendMessageForm = (props: IProps) => {
         if (!textArea) return;
         textArea.style.height = "auto";
         props.adjustMessageListSize();
+        props.scrollMessageListToBottom();
     }
 
     return (

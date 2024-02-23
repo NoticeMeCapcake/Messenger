@@ -1,5 +1,6 @@
 "use client";
 
+import "./style.css";
 import {MouseEvent} from "react";
 // import {Simulate} from "react-dom/test-utils";
 // import click = Simulate.click;
@@ -31,7 +32,7 @@ const GroupSelector = ({groupListSetter}: IProps) => {
     }
     return <small className="row py-2" style={{borderBottom: "1px solid #3b3a39"}}>
         {Array.from(groupMapper).map(([key, value]) => {
-            return <div className="col-3 light-hover text-center cursor-pointer" onClick={e => handleClick(key)}>
+            return <div className="col-3 light-hover text-center cursor-pointer group-item" onClick={e => handleClick(key)}>
                 {key}
             </div>
         })}

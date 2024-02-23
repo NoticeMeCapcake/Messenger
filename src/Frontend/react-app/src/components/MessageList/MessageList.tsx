@@ -1,7 +1,7 @@
 "use client";
 import * as React from 'react';
 import IChatMessage from "../../dto/IChatMessage";
-import {useState} from "react";
+import { FC, MutableRefObject, useEffect, useState } from 'react';
 import {PersonIcon} from "@radix-ui/react-icons";
 import "./style.css"
 // import "../dialogues/style.css"
@@ -9,14 +9,15 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 interface IProps {
     messages: IChatMessage[];
+    scrollAreaRef: MutableRefObject<HTMLDivElement | null>
 }
 
-interface IState {
-    senderId: string;
-}
+const MessageList: FC<IProps> = ({messages, scrollAreaRef}) => {
+  useEffect(() => {
+    console.log("RERENDER");
+  }, [])
 
-const MessageList = ({messages}: IProps) => {
-    // const [previousSenderId, setPreviousMessageSenderId] = useState<IState>({senderId: '-1'})
+  console.log("msg list render")
     console.warn(messages.length)
 
     const tryGetSenderName = (message: IChatMessage, prevSenderId: string | undefined) => {
@@ -27,13 +28,13 @@ const MessageList = ({messages}: IProps) => {
 
     return (
             <ScrollArea.Root className="ScrollAreaRoot">
-                <ScrollArea.Viewport className="ScrollAreaViewport">
+                <ScrollArea.Viewport ref={scrollAreaRef} className="ScrollAreaViewport">
                     {messages.map((message, index) =>
                         <div key={message.id} className={"my-2 row justify-content-start"}>
 
                             <div className={"col-7 row py-2" + (message.isFromUser ? " offset-4" : " offset-1")}>
                                 {message.isFromUser ? null :
-                                    <div className="">
+                                    <div className="col-auto">
                                         <PersonIcon/>
                                     </div>}
                                 <div className={"text-container py-1" + (message.isFromUser ? " light-bg" : " dark-bg-msg")}>
