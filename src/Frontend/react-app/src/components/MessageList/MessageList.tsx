@@ -1,28 +1,31 @@
 "use client";
 import * as React from 'react';
-import IChatMessage from "../../dto/IChatMessage";
+// import IChatMessage from "../../dto/IChatMessage";
 import { FC, MutableRefObject, useEffect, useState } from 'react';
 import {PersonIcon} from "@radix-ui/react-icons";
 import "./style.css"
 // import "../dialogues/style.css"
 import * as ScrollArea from "@radix-ui/react-scroll-area";
+import { useAppSelector } from '@/services/store/types/hooks';
+import { IChatMessage, selectMessages } from '@/services/store/slices/messagesSlice';
 
 interface IProps {
-    messages: IChatMessage[];
     scrollAreaRef: MutableRefObject<HTMLDivElement | null>
 }
 
-const MessageList: FC<IProps> = ({messages, scrollAreaRef}) => {
-  useEffect(() => {
-    console.log("RERENDER");
-  }, [])
+const MessageList: FC<IProps> = ({scrollAreaRef}) => {
+    const messages = useAppSelector(selectMessages);
 
-  console.log("msg list render")
+    useEffect(() => {
+        console.log("RERENDER");
+    }, [])
+
+    console.log("msg list render")
     console.warn(messages.length)
 
     const tryGetSenderName = (message: IChatMessage, prevSenderId: string | undefined) => {
-        console.debug(message.senderId + "     " + prevSenderId + "     " + (message.senderId === prevSenderId));
-        return message.senderId === prevSenderId || message.isFromUser ? null : <small style={{color: "#b436c1"}}> {message.senderId} </small>;
+        console.debug(message.senderName + "     " + prevSenderId + "     " + (message.senderName === prevSenderId));
+        return message.senderName === prevSenderId || message.isFromUser ? null : <small style={{color: "#b436c1"}}> {message.senderName} </small>;
     }
 
 
@@ -38,7 +41,7 @@ const MessageList: FC<IProps> = ({messages, scrollAreaRef}) => {
                                         <PersonIcon/>
                                     </div>}
                                 <div className={"text-container py-1" + (message.isFromUser ? " light-bg" : " dark-bg-msg")}>
-                                    {tryGetSenderName(message, messages[index - 1]?.senderId)}
+                                    {tryGetSenderName(message, messages[index - 1]?.senderName)}
                                     <div>{message.text}</div>
                                 </div>
                             </div>

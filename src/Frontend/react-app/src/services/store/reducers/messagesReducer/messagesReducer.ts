@@ -1,6 +1,6 @@
 import { IMessagesState } from '@/services/store/reducers/messagesReducer/types';
 import { SET_MESSAGES } from '@/services/store/actions/messagesActions';
-import { TMessagesActions } from '@/services/store/types';
+import { TMessagesActions } from '@/services/store/types/hooks';
 
 export const initialState: IMessagesState = {messages: [{id: 1, isFromUser: false, senderId: 'templateName', text: 'template'}]};
 

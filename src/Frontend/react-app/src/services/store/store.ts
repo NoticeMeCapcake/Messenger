@@ -1,16 +1,11 @@
-import {applyMiddleware, compose, createStore} from "redux";
-import {rootReducer} from "./reducers";
-import { thunk } from 'redux-thunk';
-import {legacy_createStore as create} from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { messagesReducer } from '@/services/store/slices/messagesSlice';
 
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-  }
-}
+export const store = configureStore({
+    reducer: {
+        messages: messagesReducer
+    }
+})
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const enhancer = composeEnhancers(applyMiddleware(thunk));
-
-// export const store = create(rootReducer, enhancer);
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

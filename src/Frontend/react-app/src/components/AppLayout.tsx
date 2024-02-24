@@ -9,7 +9,9 @@ import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm";
 import {SideMenu} from "@/components/SideMenu/SideMenu";
 import GroupSelector from "@/components/GroupSelector/GroupSelector";
 import Searcher from "@/components/Searcher/Searcher";
-import { random } from 'nanoid'; // Import bootstrap CSS
+import { random } from 'nanoid';
+import { useAppDispatch } from '@/services/store/types/hooks';
+import { addMessage } from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
 
 
 let id = 1;
@@ -22,8 +24,10 @@ const initGroupList = Array.from({ length: 50 }).map((_, i, a) => `Chat:0.${a.le
 
 
 export default function AppLayout() {
+    const dispatch = useAppDispatch();
+
     const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
-    const [groupList, setGroupList] = useState<string[]>(initGroupList)
+    const [groupList , setGroupList] = useState<string[]>(initGroupList)
     const messageListRef = useRef<HTMLDivElement | null>(null);
     const messageListScrollAreaRef = useRef<HTMLDivElement | null>(null); //TODO: change messageListScrollAreaRef
     const titleRef = useRef<HTMLDivElement | null>(null);
@@ -49,6 +53,7 @@ export default function AppLayout() {
     }
 
     return (
+      <main style={{width: "100vw", height: "100vh"}}>
         <div className="container-fluid" style={{backgroundColor:  "#1a181b"}}>
             <div className="row justify-content-center" id="mainRow">
                 <div className="col-3 dark-bg" style={{height: "100vh", borderRight: "1px solid #3b3a39"}}>
@@ -68,7 +73,8 @@ export default function AppLayout() {
                     <div className="">
                         <DialogueArea clickAction={(tag: string): void => {
                             console.log(tag);
-                            setMessages([...messages, {id: Math.random(), isFromUser: false, senderId: senderName, text: tag}]);
+                            dispatch(addMessage({id: Math.random(), isFromUser: false, senderName: senderName, text: tag}))
+                            // setMessages([...messages, {id: Math.random(), isFromUser: false, senderId: senderName, text: tag}]);
                             console.log(messages)
                         }} groupList={groupList}></DialogueArea>
                     </div>
@@ -78,21 +84,22 @@ export default function AppLayout() {
                         <Title chatName={senderName}/>
                     </div>
                     <div ref={messageListRef} style={{height: "calc(100vh - 145px)"}} className="">
-                        <MessageList scrollAreaRef={messageListScrollAreaRef} messages={messages}/>
+                        <MessageList scrollAreaRef={messageListScrollAreaRef}/>
                     </div>
                     <div ref={inputContainerRef} className="align-self-end">
                             <SendMessageForm scrollMessageListToBottom={scrollToNewMessage} adjustMessageListSize={adjustMessageListSize} initialText={''} sendMessage={(text: string): void => {
                                 console.log(text)
                                 console.log("in set text: ", messageListScrollAreaRef.current?.scrollHeight);
-                                setMessages([...messages, {id: Math.random(), isFromUser: true, senderId: "Me", text: text}]);
-                                // console.log(messages);
+                                dispatch(addMessage({id: Math.random(), isFromUser: true, senderName: "Me", text: text}))
+
+                                // setMessages([...messages, {id: Math.random(), isFromUser: true, senderId: "Me", text: text}]);
                                 console.log('MESS', messages);
                                 console.log("in set text after: ", messageListScrollAreaRef.current?.scrollHeight);
-                                // console.log(messages)
                             }} />
                     </div>
                 </div>
             </div>
         </div>
+  </main>
     );
 }

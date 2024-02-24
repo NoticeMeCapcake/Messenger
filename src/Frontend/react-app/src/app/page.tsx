@@ -4,22 +4,14 @@ import "./globals.css"
 
 import AppLayout from "@/components/AppLayout";
 import { Provider } from 'react-redux';
-// import { store } from '@/services/store/store';
+import { store } from '@/services/store/store';
 
 
-let id = 1;
-let message = "template";
-let senderName = "templateName"
-
-// const messages: ChatMessage[] = [{id: id, senderId: senderName, text: message}]
-
-export default async function Home() {
+export default async function App() {
     return (
-      // <Provider store={store}>
-        <main style={{width: "100vw", height: "100vh"}}>
+      <Provider store={store}>
             <AppLayout/>
-        </main>
-      // </Provider>
+      </Provider>
     )
   // return (
   //   <main className="container-fluid bg-black">
