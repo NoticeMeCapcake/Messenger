@@ -10,18 +10,21 @@ import { useAppSelector } from '@/services/store/types/hooks';
 import { IChatMessage, selectMessages } from '@/services/store/slices/messagesSlice';
 
 interface IProps {
-    scrollAreaRef: MutableRefObject<HTMLDivElement | null>
+    scrollAreaRef: MutableRefObject<HTMLDivElement | null>;
+    scrollMessageListToBottom: () => void;
 }
 
-const MessageList: FC<IProps> = ({scrollAreaRef}) => {
+const MessageList: FC<IProps> = ({scrollAreaRef, scrollMessageListToBottom}) => {
     const messages = useAppSelector(selectMessages);
 
     useEffect(() => {
-        console.log("RERENDER");
-    }, [])
+        // console.log("RERENDER");
+        console.log('message selector', messages);
+        if (messages[messages.length - 1]?.isFromUser) {
+            scrollMessageListToBottom();
+        }
+    }, [messages])
 
-    console.log("msg list render")
-    console.warn(messages.length)
 
     const tryGetSenderName = (message: IChatMessage, prevSenderId: string | undefined) => {
         console.debug(message.senderName + "     " + prevSenderId + "     " + (message.senderName === prevSenderId));

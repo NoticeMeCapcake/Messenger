@@ -60,7 +60,7 @@ export const SendMessageForm = (props: IProps) => {
         if (!textArea) return;
         textArea.style.height = "auto";
         props.adjustMessageListSize();
-        props.scrollMessageListToBottom();
+        // props.scrollMessageListToBottom();
     }
 
     return (

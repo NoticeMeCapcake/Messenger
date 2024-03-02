@@ -26,7 +26,7 @@ const initGroupList = Array.from({ length: 50 }).map((_, i, a) => `Chat:0.${a.le
 export default function AppLayout() {
     const dispatch = useAppDispatch();
 
-    const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
+    // const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
     const [groupList , setGroupList] = useState<string[]>(initGroupList)
     const messageListRef = useRef<HTMLDivElement | null>(null);
     const messageListScrollAreaRef = useRef<HTMLDivElement | null>(null); //TODO: change messageListScrollAreaRef
@@ -75,7 +75,6 @@ export default function AppLayout() {
                             console.log(tag);
                             dispatch(addMessage({id: Math.random(), isFromUser: false, senderName: senderName, text: tag}))
                             // setMessages([...messages, {id: Math.random(), isFromUser: false, senderId: senderName, text: tag}]);
-                            console.log(messages)
                         }} groupList={groupList}></DialogueArea>
                     </div>
                 </div>
@@ -84,7 +83,7 @@ export default function AppLayout() {
                         <Title chatName={senderName}/>
                     </div>
                     <div ref={messageListRef} style={{height: "calc(100vh - 145px)"}} className="">
-                        <MessageList scrollAreaRef={messageListScrollAreaRef}/>
+                        <MessageList scrollAreaRef={messageListScrollAreaRef} scrollMessageListToBottom={scrollToNewMessage}/>
                     </div>
                     <div ref={inputContainerRef} className="align-self-end">
                             <SendMessageForm scrollMessageListToBottom={scrollToNewMessage} adjustMessageListSize={adjustMessageListSize} initialText={''} sendMessage={(text: string): void => {
@@ -93,7 +92,6 @@ export default function AppLayout() {
                                 dispatch(addMessage({id: Math.random(), isFromUser: true, senderName: "Me", text: text}))
 
                                 // setMessages([...messages, {id: Math.random(), isFromUser: true, senderId: "Me", text: text}]);
-                                console.log('MESS', messages);
                                 console.log("in set text after: ", messageListScrollAreaRef.current?.scrollHeight);
                             }} />
                     </div>
