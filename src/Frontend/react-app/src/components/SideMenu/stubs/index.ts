@@ -1,30 +1,30 @@
 import * as React from "react";
 import {IconProps} from "@radix-ui/react-icons/dist/types";
 import { GearIcon, PersonIcon, QuestionMarkCircledIcon, StarIcon } from '@radix-ui/react-icons';
-import { ExoticComponent, ReactNode, RefAttributes } from 'react';
+import { ExoticComponent, ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react';
 
 interface IMenuItems {
     title: string;
-    icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
+    Icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
     // icon: React.ReactNode;
 }
 
 export const MENU_ITEMS: IMenuItems[] = [
     {
         title: "Saved Messages",
-        icon: StarIcon,
+        Icon: StarIcon,
     },
     {
         title: "Settings",
-        icon: GearIcon
+        Icon: GearIcon
     },
     {
         title: "Profile",
-        icon: PersonIcon
+        Icon: PersonIcon
     },
     {
         title: "About",
-        icon: QuestionMarkCircledIcon
+        Icon: QuestionMarkCircledIcon
     },
 
 ]

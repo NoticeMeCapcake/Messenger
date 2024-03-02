@@ -13,10 +13,13 @@ export const SideMenu = () => {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
                 <DropdownMenu.Content className="dropdown-menu-content p-2">
-                    {MENU_ITEMS.map(({title, icon}) =>
+                    {MENU_ITEMS.map(({title, Icon}) =>
                     <DropdownMenu.Item className="dropdown-menu-item cursor-pointer">
                         <div className="p-2">
                             {title}
+                        </div>
+                        <div>
+                            <Icon/>
                         </div>
                     </DropdownMenu.Item>
                     )}
