@@ -7,7 +7,7 @@ public enum MessageDto {;
     protected interface Message { @NotBlank String message();}
 
     public enum Request {;
-        public record Public(MultipartFile message)
+        public record Public(MultipartFile message){}
     }
 
 }
