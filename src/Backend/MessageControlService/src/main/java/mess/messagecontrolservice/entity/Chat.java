@@ -11,10 +11,18 @@ public class Chat extends BaseEntity {
 
     private Type type;
 
-
+    private UserWithRole[] users;
     public enum Type {
         group,
         channel,
         personal
     }
+
+    public enum ChatRole {
+        admin,
+        member
+    }
+    public record UserWithRole(String id, ChatRole role) {
+    }
+
 }

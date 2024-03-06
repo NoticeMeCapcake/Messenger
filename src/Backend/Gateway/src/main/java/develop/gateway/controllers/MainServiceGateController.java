@@ -2,6 +2,7 @@ package develop.gateway.controllers;
 
 
 import develop.gateway.dto.service.ServiceDto;
+import develop.gateway.service.MessageInfo;
 import develop.gateway.service.MessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,9 @@ public class MainServiceGateController {
 
     @PostMapping
     @ResponseBody
-    public ServiceDto.Request.Public serviceEndpoint(@RequestBody ServiceDto.Request.Public request) {
-        System.out.println(request.message());
-        messageProducer.sendMessage("my-topic", request.message());
+    public ServiceDto.Request.Public serviceEndpoint(@RequestBody MessageInfo messageInfo) {
+        System.out.println(messageInfo.messageDTO().text());
+        messageProducer.sendMessage("test-process-message", messageInfo);
         // отправить в прокси, который разберётся, в какой сервис отдать
         // сервисы будут раскидывать сообщения в определённые топики кафки
         return new ServiceDto.Request.Public("Hello World");
