@@ -1,6 +1,6 @@
 "use client";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DialogueArea from "@/components/DialogueArea/DialogueArea";
+import ChatList from "@/components/DialogueArea/ChatList";
 import MessageList from "@/components/MessageList/MessageList";
 import IChatMessage from "@/dto/IChatMessage";
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -12,6 +12,9 @@ import Searcher from "@/components/Searcher/Searcher";
 import { random } from 'nanoid';
 import { useAppDispatch } from '@/services/store/types/hooks';
 import { addMessage } from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
+import { Stomp } from "@stomp/stompjs";
+import SockJS from 'sockjs-client';
+import IMessageRequest from '@/dto/IMessageRequest';
 
 
 let id = 1;
@@ -21,7 +24,17 @@ let senderName = "templateName"
 // const messages: ChatMessage[] = [{id: id, senderId: senderName, text: message}]
 
 const initGroupList = Array.from({ length: 50 }).map((_, i, a) => `Chat:0.${a.length - i}`);
-
+const sockJs = new SockJS("http://localhost:8080/ws-messenger-api")
+const stompClient = Stomp.over(sockJs);
+stompClient.connect({}, () => {
+      console.log('Connected!');
+      stompClient.subscribe("/user/" + "42" + '/topic/message', (greeting) => {
+          console.log("Received: " + JSON.parse(greeting.body).content)
+          alert(JSON.parse(greeting.body).content);
+      });
+  },
+  () => {console.log("Error")}
+);
 
 export default function AppLayout() {
     const dispatch = useAppDispatch();
@@ -71,11 +84,11 @@ export default function AppLayout() {
                         <GroupSelector groupListSetter={setGroupList}/>
                     </div>
                     <div className="">
-                        <DialogueArea clickAction={(tag: string): void => {
+                        <ChatList clickAction={(tag: string): void => {
                             console.log(tag);
-                            dispatch(addMessage({id: Math.random(), isFromUser: false, senderName: senderName, text: tag}))
+                            dispatch(addMessage({id: Math.floor(Math.random() * 10000), senderId: "21", chatId: "42", isFromUser: false, senderName: senderName, text: tag}))
                             // setMessages([...messages, {id: Math.random(), isFromUser: false, senderId: senderName, text: tag}]);
-                        }} groupList={groupList}></DialogueArea>
+                        }} groupList={groupList}></ChatList>
                     </div>
                 </div>
                 <div className="col-9">
@@ -89,10 +102,10 @@ export default function AppLayout() {
                             <SendMessageForm scrollMessageListToBottom={scrollToNewMessage} adjustMessageListSize={adjustMessageListSize} initialText={''} sendMessage={(text: string): void => {
                                 console.log(text)
                                 console.log("in set text: ", messageListScrollAreaRef.current?.scrollHeight);
-                                dispatch(addMessage({id: Math.random(), isFromUser: true, senderName: "Me", text: text}))
-
-                                // setMessages([...messages, {id: Math.random(), isFromUser: true, senderId: "Me", text: text}]);
-                                console.log("in set text after: ", messageListScrollAreaRef.current?.scrollHeight);
+                                const payload : IMessageRequest = {id: null, userId: "42", chatId: "42", text: text};
+                                dispatch(addMessage({id: Math.floor(Math.random() * 10000), isFromUser: true, chatId: "42", senderId: "42", senderName: "", text: text}))
+                                console.log("Will send: " + JSON.stringify(payload));
+                                stompClient.send("/app/message/create", {}, JSON.stringify(payload));
                             }} />
                     </div>
                 </div>

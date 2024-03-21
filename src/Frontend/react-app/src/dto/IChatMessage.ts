@@ -1,7 +1,9 @@
 interface IChatMessage {
     id: number;
     isFromUser: boolean;
-    senderId: string;
+    senderName: string;
+    userId: string;
+    chatId: string;
     text: string;
 }
 

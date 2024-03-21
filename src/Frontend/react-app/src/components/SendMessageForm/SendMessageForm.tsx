@@ -3,10 +3,7 @@
 import {
     ChangeEvent,
     KeyboardEvent,
-    MutableRefObject,
     SyntheticEvent,
-    UIEvent,
-    useEffect,
     useRef,
     useState
 } from 'react';
@@ -14,14 +11,12 @@ import {FaceIcon, FilePlusIcon, PaperPlaneIcon} from "@radix-ui/react-icons"
 import "./style.css";
 import Tooltip from "@/components/Tooltip/Tooltip";
 
-
 interface IProps {
     initialText: string,
     sendMessage:  (text: string) => void,
     adjustMessageListSize: () => void,
     scrollMessageListToBottom: () => void
 }
-
 
 export const SendMessageForm = (props: IProps) => {
     const [text, setText] = useState(props.initialText);
@@ -53,6 +48,7 @@ export const SendMessageForm = (props: IProps) => {
 
     const handleSubmitForm = (event: SyntheticEvent<HTMLElement>) => {
         event.preventDefault();
+
         if (!text.trim()) return;
         props.sendMessage(text);
         setText("");
@@ -60,7 +56,6 @@ export const SendMessageForm = (props: IProps) => {
         if (!textArea) return;
         textArea.style.height = "auto";
         props.adjustMessageListSize();
-        // props.scrollMessageListToBottom();
     }
 
     return (

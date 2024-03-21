@@ -5,12 +5,21 @@ import mess.messagecontrolservice.entity.MessageEntity;
 import mess.messagecontrolservice.repository.MessageRepository;
 import mess.messagecontrolservice.service.KafkaMessageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
 
+@Component
+@Scope("singleton")
 public class MessageActionResolver {
-    @Autowired
     private static MessageRepository repository;
+
+    private MessageActionResolver(@Autowired MessageRepository _repository) {
+        repository = _repository;
+    }
 
     public static void resolveAction(KafkaMessageInfo messageInfo) {
         Consumer<KafkaMessageDTO> consumer = switch (messageInfo.action()) {

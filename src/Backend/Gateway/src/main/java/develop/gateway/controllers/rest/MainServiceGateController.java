@@ -1,4 +1,4 @@
-package develop.gateway.controllers;
+package develop.gateway.controllers.rest;
 
 
 import develop.gateway.dto.service.ServiceDto;
@@ -17,17 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MainServiceGateController {
     // пререквизиты: у пользователя должен быть идетификатор сессии (будет отдельный сервис, который проверяет его)
 
-    private final MessageProducer messageProducer;
-
-    public MainServiceGateController(@Autowired MessageProducer _messageProducer) {
-        messageProducer = _messageProducer;
-    }
-
     @PostMapping
     @ResponseBody
     public ServiceDto.Request.Public serviceEndpoint(@RequestBody MessageInfo messageInfo) {
         System.out.println(messageInfo.messageDTO().text());
-        messageProducer.sendMessage("test-process-message", messageInfo);
+//        messageProducer.sendMessage("test-process-message", messageInfo);
         // отправить в прокси, который разберётся, в какой сервис отдать
         // сервисы будут раскидывать сообщения в определённые топики кафки
         return new ServiceDto.Request.Public("Hello World");

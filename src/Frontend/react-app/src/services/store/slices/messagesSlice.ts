@@ -2,9 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/services/store/store';
 
 export interface IChatMessage {
-    id: number;
+    id: number | null;
     isFromUser: boolean;
+    chatId: string;
     senderName: string;
+    senderId: string;
     text: string;
 }
 
@@ -15,10 +17,12 @@ export interface IChatMessageState {
 const initialState = {
     messages: [
         {
-            id: Math.random(),
+            id: Math.floor(Math.random() * 10000),
             isFromUser: false,
             senderName: "Template Name",
-            text: "Template text",
+            senderId: "42",
+            chatId: "42",
+            text: "Template text"
         }
     ]
 } satisfies IChatMessageState as IChatMessageState
