@@ -2,33 +2,29 @@
 
 import "./style.css";
 import {MouseEvent} from "react";
-// import {Simulate} from "react-dom/test-utils";
-// import click = Simulate.click;
+import { selectSelectedChatType, setSelectedChatType } from '@/services/store/slices/SelectedChatTypeSlice';
+import { useAppDispatch, useAppSelector } from '@/services/store/types/hooks';
+import ChatType from '@/dto/ChatType';
 
-enum GroupType {
-    All, Personal, Groups, Channels
-}
-
-interface IProps {
-    groupListSetter: (groupList: string[]) => void
-}
 
 const GroupSelector = ({groupListSetter}: IProps) => {
+    const dispatch = useAppDispatch();
+    const selectedChatType = useAppSelector(selectSelectedChatType);
 
-    const groupMapper: Map<string, GroupType> = new Map([
-        ["All", GroupType.All],
-        ["Personal", GroupType.Personal],
-        ["Groups", GroupType.Groups],
-        ["Channels", GroupType.Channels]
+    const groupMapper: Map<string, ChatType> = new Map([
+        ["All", ChatType.All],
+        ["Personal", ChatType.Personal],
+        ["Groups", ChatType.Groups],
+        ["Channels", ChatType.Channels]
     ]);
 
     console.log(groupMapper.size);
 
-    const generateGroupList = (groupType: GroupType) => {
+    const generateGroupList = (groupType: ChatType) => {
         return Array.from({ length: 50 }).map((_, i, a) => `Chat:${groupType}.${a.length - i}`);
     }
     const handleClick = (key: string) => {
-        groupListSetter(generateGroupList(groupMapper.get(key) ?? GroupType.All));
+        dispatch(setSelectedChatType(groupMapper.get(key)!));
     }
     return <small className="row py-2" style={{borderBottom: "1px solid #3b3a39"}}>
         {Array.from(groupMapper).map(([key, value]) => {

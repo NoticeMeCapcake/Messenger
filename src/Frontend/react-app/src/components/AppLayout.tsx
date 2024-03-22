@@ -2,14 +2,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ChatList from "@/components/DialogueArea/ChatList";
 import MessageList from "@/components/MessageList/MessageList";
-import IChatMessage from "@/dto/IChatMessage";
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {Title} from "@/components/ChatHeader/Title";
+import React, { useCallback, useEffect, useRef } from 'react';
+import Title from "@/components/ChatHeader/Title";
 import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm";
 import {SideMenu} from "@/components/SideMenu/SideMenu";
 import GroupSelector from "@/components/GroupSelector/GroupSelector";
 import Searcher from "@/components/Searcher/Searcher";
-import { random } from 'nanoid';
 import { useAppDispatch } from '@/services/store/types/hooks';
 import { addMessage } from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
 import { Stomp } from "@stomp/stompjs";
@@ -40,7 +38,6 @@ export default function AppLayout() {
     const dispatch = useAppDispatch();
 
     // const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
-    const [groupList , setGroupList] = useState<string[]>(initGroupList)
     const messageListRef = useRef<HTMLDivElement | null>(null);
     const messageListScrollAreaRef = useRef<HTMLDivElement | null>(null); //TODO: change messageListScrollAreaRef
     const titleRef = useRef<HTMLDivElement | null>(null);
@@ -81,19 +78,15 @@ export default function AppLayout() {
                         </div>
                     </div>
                     <div className="">
-                        <GroupSelector groupListSetter={setGroupList}/>
+                        <GroupSelector/>
                     </div>
                     <div className="">
-                        <ChatList clickAction={(tag: string): void => {
-                            console.log(tag);
-                            dispatch(addMessage({id: Math.floor(Math.random() * 10000), senderId: "21", chatId: "42", isFromUser: false, senderName: senderName, text: tag}))
-                            // setMessages([...messages, {id: Math.random(), isFromUser: false, senderId: senderName, text: tag}]);
-                        }} groupList={groupList}></ChatList>
+                        <ChatList/>
                     </div>
                 </div>
                 <div className="col-9">
                     <div ref={titleRef} className="">
-                        <Title chatName={senderName}/>
+                        <Title/>
                     </div>
                     <div ref={messageListRef} style={{height: "calc(100vh - 145px)"}} className="">
                         <MessageList scrollAreaRef={messageListScrollAreaRef} scrollMessageListToBottom={scrollToNewMessage}/>

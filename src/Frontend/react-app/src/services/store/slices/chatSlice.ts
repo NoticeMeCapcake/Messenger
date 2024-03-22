@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/services/store/store';
+import ChatType from '@/dto/ChatType';
 
 export interface IChatInfo {
     id: string | null;
     users: string[];
     chatName: string;
-    type: string;
+    type: ChatType;
 }
 
 export interface IChatInfoState {
@@ -17,9 +18,13 @@ const initialState = {
         id: "42",
         users: ["42", "21"],
         chatName: "templateChat",
-        type: "private"
-    }
-    ]
+        type: ChatType.Personal
+    }, {
+        id: "43",
+        users: ["42", "22", "21"],
+        chatName: "templateChat2",
+        type: ChatType.Groups
+    } ]
 } satisfies IChatInfoState as IChatInfoState
 
 export const chatSlice = createSlice({
@@ -48,6 +53,6 @@ export const chatSlice = createSlice({
 
 export const { addChat, setChats, removeChat, clearChats, modifyChat } = chatSlice.actions;
 
-export const selectChats = (state: RootState) => state.chat.chats;
+export const selectChats = (state: RootState) => state.chat.chats as IChatInfo[];
 
 export const chatReducer = chatSlice.reducer ;

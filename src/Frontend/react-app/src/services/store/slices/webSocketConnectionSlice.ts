@@ -2,16 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/services/store/store';
 import ChatType from '@/dto/ChatType';
 
-export interface ISelectedChatTypeInfoState {
+export interface IWebSocketConnectionState {
     selectedChatType: ChatType;
 }
 
 const initialState = {
     selectedChatType: ChatType.All
-} satisfies ISelectedChatTypeInfoState as ISelectedChatTypeInfoState
+} satisfies IWebSocketConnectionState as IWebSocketConnectionState
 
-export const selectedChatTypeSlice = createSlice({
-    name: "selectedChatType",
+export const webSocketConnectionSlice = createSlice({
+    name: "webSocketConnection",
     initialState,
     reducers: {
         setSelectedChatType: (state, action: PayloadAction<ChatType>) => {
