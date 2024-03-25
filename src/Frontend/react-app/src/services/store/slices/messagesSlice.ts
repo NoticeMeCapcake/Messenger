@@ -1,14 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/services/store/store';
-
-export interface IChatMessage {
-    id: number | null;
-    isFromUser: boolean;
-    chatId: string;
-    senderName: string;
-    senderId: string;
-    text: string;
-}
+import IChatMessage from '@/dto/IChatMessage';
 
 export interface IChatMessageState {
     messages: IChatMessage[]
@@ -43,10 +35,15 @@ export const messagesSlice = createSlice({
         clearMessages: (state) => {
             state.messages = [];
         },
-        modifyMessage: (state, action: PayloadAction<{id: number, text: string}>) => {
+        modifyMessage: (state, action: PayloadAction<{id: string, text: string}>) => {
             state.messages = state.messages.map(message =>
               message.id === action.payload.id ?
                 { ...message, text: action.payload.text } : message);
+        },
+        setIdMessage: (state, action: PayloadAction<{tempId: string, id: string}>) => {
+            state.messages = state.messages.map(message =>
+              message.tempId === action.payload.tempId ?
+                { ...message, id: action.payload.id } : message);
         }
     }
 });

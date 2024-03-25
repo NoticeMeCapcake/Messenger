@@ -1,6 +1,5 @@
-interface IMessageRequest {
-    id: string | null;
-    tempId: string;
+interface IChatRequest {
+    id: number | null;
     userId: string;
     chatId: string;
     text: string;

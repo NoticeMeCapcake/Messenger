@@ -1,10 +1,9 @@
-interface IChatMessage {
-    id: number;
+export default interface IChatMessage {
+    id: number | null;
+    tempId: string;
     isFromUser: boolean;
-    senderName: string;
-    userId: string;
     chatId: string;
+    senderName: string;
+    senderId: string;
     text: string;
 }
-
-export default IChatMessage;
