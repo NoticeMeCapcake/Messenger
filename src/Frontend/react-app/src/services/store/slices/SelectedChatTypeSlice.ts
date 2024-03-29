@@ -18,7 +18,7 @@ export const selectedChatTypeSlice = createSlice({
             state.selectedChatType = action.payload;
         },
         unsetSelectedChatType: (state) => {
-            state.selectedChatType = "all";
+            state.selectedChatType = ChatType.All;
         }
     }
 });

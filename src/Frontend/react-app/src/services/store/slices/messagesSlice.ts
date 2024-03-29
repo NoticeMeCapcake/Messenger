@@ -9,8 +9,8 @@ export interface IChatMessageState {
 const initialState = {
     messages: [
         {
-            id: Math.floor(Math.random() * 10000),
-            isFromUser: false,
+            id: "123",
+            tempId: "123",
             senderName: "Template Name",
             senderId: "42",
             chatId: "42",
@@ -29,7 +29,7 @@ export const messagesSlice = createSlice({
         setMessages: (state, action: PayloadAction<IChatMessage[]>) => {
             state.messages = action.payload;
         },
-        removeMessage: (state, action: PayloadAction<number>) => { // remove by id
+        removeMessage: (state, action: PayloadAction<string>) => { // remove by id
             state.messages = state.messages.filter(message => message.id !== action.payload);
         },
         clearMessages: (state) => {
@@ -48,7 +48,7 @@ export const messagesSlice = createSlice({
     }
 });
 
-export const { addMessage, setMessages, removeMessage, clearMessages, modifyMessage } = messagesSlice.actions;
+export const { addMessage, setMessages, removeMessage, clearMessages, modifyMessage, setIdMessage } = messagesSlice.actions;
 
 export const selectMessages = (state: RootState) => state.messages.messages;
 

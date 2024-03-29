@@ -1,7 +1,6 @@
 export default interface IChatMessage {
-    id: number | null;
+    id: string | null;
     tempId: string;
-    isFromUser: boolean;
     chatId: string;
     senderName: string;
     senderId: string;

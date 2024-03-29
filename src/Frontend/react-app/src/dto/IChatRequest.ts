@@ -5,4 +5,4 @@ interface IChatRequest {
     text: string;
 }
 
-export default IMessageRequest;
+export default IChatRequest;

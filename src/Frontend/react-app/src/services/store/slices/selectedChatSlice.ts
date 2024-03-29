@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '@/services/store/store';
-import { IChatInfo } from '@/services/store/slices/chatSlice';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from '@/services/store/store';
+import {IChatInfo} from '@/services/store/slices/chatSlice';
+import ChatType from "@/dto/ChatType";
 
 export interface ISelectedChatState {
     selectedChat: IChatInfo | null;
@@ -11,7 +12,7 @@ const initialState = {
         id: "42",
         users: ["42", "21"],
         chatName: "templateChat",
-        type: "private"
+        type: ChatType.Personal
     }
 } satisfies ISelectedChatState as ISelectedChatState
 
@@ -23,7 +24,7 @@ export const selectedChatSlice = createSlice({
             state.selectedChat = action.payload;
         },
         unsetSelectedChat: (state) => {
-            state.chats = null;
+            state.selectedChat = null;
         }
     }
 });

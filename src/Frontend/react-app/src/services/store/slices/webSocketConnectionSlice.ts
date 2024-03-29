@@ -8,6 +8,9 @@ import { selectCurrentUser } from '@/services/store/slices/currentUserSlice';
 import IMessageRequest from '@/dto/IMessageRequest';
 import { RequestType } from '@/dto/RequestType';
 import { NetworkConstants } from '@/networking/NetworkConstants';
+import {setIdMessage} from "@/services/store/slices/messagesSlice";
+import IMessageResponse from "@/dto/IMessageResponse";
+import IChatRequest from "@/dto/IChatRequest";
 
 const currentUser = useAppSelector(selectCurrentUser)
 const dispatch = useAppDispatch();
@@ -35,7 +38,8 @@ export interface IWebSocketConnectionState {
 }
 
 const initialState = {
-    socketClient: stompClient
+    socketClient: stompClient,
+    socketSubscriptions: [] as StompSubscription[]
 } satisfies IWebSocketConnectionState as IWebSocketConnectionState
 
 export const webSocketConnectionSlice = createSlice({
@@ -51,20 +55,20 @@ export const webSocketConnectionSlice = createSlice({
             const subscription = state.socketClient.subscribe(
               `/topic/message/${currentUser.id}/${action.payload.message.tempId}`,
               (response) => {
-                  const body = JSON.parse(response.body);
+                  const body = JSON.parse(response.body) as IMessageResponse;
 
-                  dispatch(setIdMessage(body.tempMessageId, body.messageId))
+                  dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
 
-                  alert("New message id: " + body.messageId);
+                  alert("New message id: " + body.id);
               }
             );
             
             setTimeout(() => {
                 unsubscribe(subscription);
                 //TODO: add error to msg
-            }, NetworkConstants.subTimeout)
+            }, NetworkConstants.subTimeout);
         },
-        sendChatViaSocket: (state, action: PayloadAction<{message: ; requestType: RequestType;}>) => {
+        sendChatViaSocket: (state, action: PayloadAction<{message: IChatRequest; requestType: RequestType;}>) => {
             state.socketClient.send(
               `/app/chat/${action.payload.requestType}`,
               {},
