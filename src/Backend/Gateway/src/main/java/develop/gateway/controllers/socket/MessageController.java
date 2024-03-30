@@ -4,10 +4,6 @@ import develop.gateway.dto.message.MessageWsRequestDTO;
 import develop.gateway.service.DtoMapper;
 import develop.gateway.service.BaseAction;
 import develop.gateway.service.MessageProducer;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -36,8 +32,8 @@ public class MessageController {
         // сервисы будут раскидывать сообщения в определённые топики кафки
 //        Thread.sleep(1000); // simulated delay
         template.convertAndSendToUser(
-                request.userId(),
-                "/topic/message",
+                request.tempId(),
+                "/topic/message/" + request.userId(),
                 new Greeting("Message sent from " + request.userId())
         );
     }

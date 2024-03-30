@@ -11,10 +11,12 @@ public class DtoMapper {
                 action,
                 new KafkaMessageDTO(
                         null,
+                        request.tempId(),
                         request.text(),
                         request.userId(),
                         request.chatId(),
                         null
+
                 )
         );
     }

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Component
 @Scope("singleton")
@@ -21,41 +19,60 @@ public class MessageActionResolver {
         repository = _repository;
     }
 
-    public static void resolveAction(KafkaMessageInfo messageInfo) {
-        Consumer<KafkaMessageDTO> consumer = switch (messageInfo.action()) {
+    public static Object resolveAction(KafkaMessageInfo messageInfo) {
+        Function<KafkaMessageDTO, Object> action = switch (messageInfo.action()) {
             case create -> MessageActionResolver::doCreate;
             case get -> MessageActionResolver::doGet;
             case update -> MessageActionResolver::doUpdate;
             case delete -> MessageActionResolver::doDelete;
         };
-        doAction(consumer, messageInfo.messageDTO());
+        return doAction(action, messageInfo.messageDTO());
     }
 
-    public static void doAction(Consumer<KafkaMessageDTO> action, KafkaMessageDTO messageDTO) {
-        action.accept(messageDTO);
+    public static Object doAction(Function<KafkaMessageDTO, Object> action, KafkaMessageDTO messageDTO) {
+        return action.apply(messageDTO);
     }
 
-    private static void doCreate(KafkaMessageDTO messageDTO) { // todo: check for exceptions
-        repository.insert(MessageEntity.builder()
+    private static Object doCreate(KafkaMessageDTO messageDTO) { // todo: check for exceptions
+        var insertingObject = MessageEntity.builder()
                 .text(messageDTO.text())
                 .isRead(false)
                 .userId(messageDTO.userId())
                 .chatId(messageDTO.chatId())
-                .build()
-        );
+                .build();
+        repository.insert(insertingObject);
+        return new KafkaMessageDTO(insertingObject.getId(),
+                messageDTO.tempId(),
+                messageDTO.tempId(),
+                messageDTO.chatId(),
+                messageDTO.text(),
+                insertingObject.getCreatedAt());
     }
 
-    private static void doUpdate(KafkaMessageDTO messageDTO) {
+    private static Object doUpdate(KafkaMessageDTO messageDTO) {
         var entity = repository.findById(messageDTO.id()).orElseThrow();
         entity.setText(messageDTO.text());
         repository.save(entity);
+        return new KafkaMessageDTO(entity.getId(),
+                messageDTO.tempId(),
+                messageDTO.tempId(),
+                messageDTO.chatId(),
+                messageDTO.text(),
+                entity.getCreatedAt());
     }
 
-    private static void doDelete(KafkaMessageDTO messageDTO) {
+    private static Object doDelete(KafkaMessageDTO messageDTO) {
         repository.deleteById(messageDTO.id());
+        return messageDTO;
     }
 
-    private static void doGet(KafkaMessageDTO messageDTO) {  // todo: change for kafka producer
-        repository.findById(messageDTO.id()).orElseThrow();
+    private static Object doGet(KafkaMessageDTO messageDTO) {  // todo: change for kafka producer
+        var entity = repository.findById(messageDTO.id()).orElseThrow();
+        return new KafkaMessageDTO(entity.getId(),
+                messageDTO.tempId(),
+                messageDTO.tempId(),
+                messageDTO.chatId(),
+                messageDTO.text(),
+                entity.getCreatedAt());
     }
 }

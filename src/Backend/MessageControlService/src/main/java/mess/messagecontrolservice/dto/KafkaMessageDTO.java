@@ -2,6 +2,6 @@ package mess.messagecontrolservice.dto;
 
 import java.time.LocalDateTime;
 
-public record KafkaMessageDTO(String text, String userId, String chatId, LocalDateTime createdAt, String id, boolean isRead) {
+public record KafkaMessageDTO(String id, String tempId, String userId, String chatId, String text, LocalDateTime createdAt) {
 
 }

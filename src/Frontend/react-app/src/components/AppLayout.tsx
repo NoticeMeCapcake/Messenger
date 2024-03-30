@@ -2,42 +2,69 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ChatList from "@/components/DialogueArea/ChatList";
 import MessageList from "@/components/MessageList/MessageList";
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import Title from "@/components/ChatHeader/Title";
 import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm";
 import {SideMenu} from "@/components/SideMenu/SideMenu";
 import GroupSelector from "@/components/GroupSelector/GroupSelector";
 import Searcher from "@/components/Searcher/Searcher";
-import { useAppDispatch } from '@/services/store/types/hooks';
-import { addMessage } from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
-import { Stomp } from "@stomp/stompjs";
-import SockJS from 'sockjs-client';
+import {useAppDispatch, useAppSelector} from '@/services/store/types/hooks';
+import {addMessage, setIdMessage} from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
 import IMessageRequest from '@/dto/IMessageRequest';
+import {RequestType} from "@/dto/RequestType";
+import {StompSubscription} from "@stomp/stompjs";
+import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
+import {
+    connectSocket,
+    selectSocketConnection,
+    sendMessageViaSocket
+} from "@/services/store/slices/webSocketConnectionSlice";
+import IMessageResponse from "@/dto/IMessageResponse";
+import {NetworkConstants} from "@/networking/NetworkConstants";
+import {wait} from "next/dist/lib/wait";
 
 
 let id = 1;
 let message = "template";
 let senderName = "templateName"
 
-// const messages: ChatMessage[] = [{id: id, senderId: senderName, text: message}]
-
-const initGroupList = Array.from({ length: 50 }).map((_, i, a) => `Chat:0.${a.length - i}`);
-const sockJs = new SockJS("http://localhost:8080/ws-messenger-api")
-const stompClient = Stomp.over(sockJs);
-stompClient.connect({}, () => {
-      console.log('Connected!');
-      stompClient.subscribe("/user/" + "42" + '/topic/message', (greeting) => {
-          console.log("Received: " + JSON.parse(greeting.body).content)
-          alert(JSON.parse(greeting.body).content);
-      });
-  },
-  () => {console.log("Error")}
-);
-
 export default function AppLayout() {
     const dispatch = useAppDispatch();
 
-    // const [messages, setMessages] = useState<IChatMessage[]>([{id: id, isFromUser: false, senderId: senderName, text: message}])
+    const unsubscribe = (subscription: StompSubscription) => {
+        subscription.unsubscribe();
+    }
+
+    const currentUser = useAppSelector(selectCurrentUser);
+    const sendMessageInfoToServer = (message: IMessageRequest, requestType: RequestType) => {
+
+        dispatch(connectSocket({user: currentUser}));
+        wait(2000).then(
+            () => {
+                dispatch(sendMessageViaSocket({message: message, requestType: requestType}));
+
+                const socketConnection = useAppSelector(selectSocketConnection);
+
+                const subscription = socketConnection.socketClient.subscribe(
+                    `user/${socketConnection.currentUser?.id}/topic/message/${message.tempId}`,
+                    (response) => {
+                        const body = JSON.parse(response.body) as IMessageResponse;
+
+                        dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
+
+                        alert("New message id: " + body.id);
+                    }
+                );
+
+                setTimeout(() => {
+                    unsubscribe(subscription);
+                    //TODO: add error to msg
+                }, NetworkConstants.subTimeout);
+            }
+        )
+
+    }
+
     const messageListRef = useRef<HTMLDivElement | null>(null);
     const messageListScrollAreaRef = useRef<HTMLDivElement | null>(null); //TODO: change messageListScrollAreaRef
     const titleRef = useRef<HTMLDivElement | null>(null);
@@ -95,10 +122,10 @@ export default function AppLayout() {
                             <SendMessageForm scrollMessageListToBottom={scrollToNewMessage} adjustMessageListSize={adjustMessageListSize} initialText={''} sendMessage={(text: string): void => {
                                 console.log(text)
                                 console.log("in set text: ", messageListScrollAreaRef.current?.scrollHeight);
-                                const payload : IMessageRequest = {id: null, userId: "42", chatId: "42", text: text};
-                                dispatch(addMessage({id: Math.floor(Math.random() * 10000), isFromUser: true, chatId: "42", senderId: "42", senderName: "", text: text}))
+                                const payload : IMessageRequest = {id: null, tempId: Math.floor(Math.random() * 10000).toString(), userId: "42", chatId: "42", text: text};
+                                dispatch(addMessage({id: null, tempId: payload.tempId, chatId: "42", senderId: "42", senderName: "", text: text}))
                                 console.log("Will send: " + JSON.stringify(payload));
-                                stompClient.send("/app/message/create", {}, JSON.stringify(payload));
+                                sendMessageInfoToServer(payload, RequestType.Create);
                             }} />
                     </div>
                 </div>

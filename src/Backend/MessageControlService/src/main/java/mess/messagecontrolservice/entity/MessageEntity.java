@@ -2,11 +2,13 @@ package mess.messagecontrolservice.entity;
 
 import com.mongodb.lang.Nullable;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Builder
 @Setter
+@Getter
 @Document(collection = "messages")
 public class MessageEntity extends BaseEntity {
     private String text;
