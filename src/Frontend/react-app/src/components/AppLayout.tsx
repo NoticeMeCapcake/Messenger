@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ChatList from "@/components/DialogueArea/ChatList";
 import MessageList from "@/components/MessageList/MessageList";
-import React, { useCallback, useRef } from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import Title from "@/components/ChatHeader/Title";
 import {SendMessageForm} from "@/components/SendMessageForm/SendMessageForm";
 import {SideMenu} from "@/components/SideMenu/SideMenu";
@@ -12,58 +12,20 @@ import {useAppDispatch, useAppSelector} from '@/services/store/types/hooks';
 import {addMessage, setIdMessage} from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
 import IMessageRequest from '@/dto/IMessageRequest';
 import {RequestType} from "@/dto/RequestType";
-import {StompSubscription} from "@stomp/stompjs";
 import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
 import {
     connectSocket,
-    selectSocketConnection,
-    sendMessageViaSocket
 } from "@/services/store/slices/webSocketConnectionSlice";
-import IMessageResponse from "@/dto/IMessageResponse";
-import {NetworkConstants} from "@/networking/NetworkConstants";
-import {wait} from "next/dist/lib/wait";
+import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
 
-
-let id = 1;
-let message = "template";
-let senderName = "templateName"
 
 export default function AppLayout() {
     const dispatch = useAppDispatch();
-
-    const unsubscribe = (subscription: StompSubscription) => {
-        subscription.unsubscribe();
-    }
-
     const currentUser = useAppSelector(selectCurrentUser);
-    const sendMessageInfoToServer = (message: IMessageRequest, requestType: RequestType) => {
 
-        dispatch(connectSocket({user: currentUser}));
-        wait(2000).then(
-            () => {
-                dispatch(sendMessageViaSocket({message: message, requestType: requestType}));
-
-                const socketConnection = useAppSelector(selectSocketConnection);
-
-                const subscription = socketConnection.socketClient.subscribe(
-                    `user/${socketConnection.currentUser?.id}/topic/message/${message.tempId}`,
-                    (response) => {
-                        const body = JSON.parse(response.body) as IMessageResponse;
-
-                        dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
-
-                        alert("New message id: " + body.id);
-                    }
-                );
-
-                setTimeout(() => {
-                    unsubscribe(subscription);
-                    //TODO: add error to msg
-                }, NetworkConstants.subTimeout);
-            }
-        )
-
-    }
+    useEffect(() => {
+        dispatch(connectSocket({user: currentUser}))
+    })
 
     const messageListRef = useRef<HTMLDivElement | null>(null);
     const messageListScrollAreaRef = useRef<HTMLDivElement | null>(null); //TODO: change messageListScrollAreaRef
@@ -125,7 +87,7 @@ export default function AppLayout() {
                                 const payload : IMessageRequest = {id: null, tempId: Math.floor(Math.random() * 10000).toString(), userId: "42", chatId: "42", text: text};
                                 dispatch(addMessage({id: null, tempId: payload.tempId, chatId: "42", senderId: "42", senderName: "", text: text}))
                                 console.log("Will send: " + JSON.stringify(payload));
-                                sendMessageInfoToServer(payload, RequestType.Create);
+                                dispatch(sendMessageViaSocket({message: payload, requestType: RequestType.Create}));
                             }} />
                     </div>
                 </div>

@@ -5,4 +5,7 @@ export default interface IChatMessage {
     senderName: string;
     senderId: string;
     text: string;
+    isRead?: boolean;
+    error?: boolean;
+    loading?: boolean;
 }

@@ -10,7 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@MessageMapping(value = "message")
+@MessageMapping(value = "/message")
 public class MessageController {
 
     private final SimpMessagingTemplate template;
@@ -24,12 +24,11 @@ public class MessageController {
         messageProducer = _messageProducer;
         dtoMapper = _dtoMapper;
     }
-    @MessageMapping("create")
+    @MessageMapping("/create")
     public void createMessage(@Payload MessageWsRequestDTO request) {
         System.out.println(request.text());
         messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(request, BaseAction.create));
-        // отправить в прокси, который разберётся, в какой сервис отдать
-        // сервисы будут раскидывать сообщения в определённые топики кафки
+
 //        Thread.sleep(1000); // simulated delay
         template.convertAndSendToUser(
                 request.tempId(),

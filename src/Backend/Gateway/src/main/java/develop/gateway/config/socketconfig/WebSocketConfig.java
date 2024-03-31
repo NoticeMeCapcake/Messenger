@@ -21,6 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-messenger-api")
                 .setAllowedOriginPatterns("*")
+//                .setAllowedOrigins("*")
                 .withSockJS();
     }
 }

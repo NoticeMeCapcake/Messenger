@@ -1,12 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/services/store/store';
 import IChatMessage from '@/dto/IChatMessage';
+import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
+import {RequestType} from "@/dto/RequestType";
+import IMessageRequest from "@/dto/IMessageRequest";
 
 export interface IChatMessageState {
     messages: IChatMessage[]
 }
 
-const initialState = {
+const initialState: IChatMessageState = {
     messages: [
         {
             id: "123",
@@ -14,10 +17,13 @@ const initialState = {
             senderName: "Template Name",
             senderId: "42",
             chatId: "42",
-            text: "Template text"
+            text: "Template text",
+            loading: false,
+            error: false,
+            isRead: true
         }
     ]
-} satisfies IChatMessageState as IChatMessageState
+}
 
 export const messagesSlice = createSlice({
     name: "message",
@@ -45,6 +51,18 @@ export const messagesSlice = createSlice({
               message.tempId === action.payload.tempId ?
                 { ...message, id: action.payload.id } : message);
         }
+    },
+    extraReducers: (builder) => {
+        builder //TODO: add loading, error, read and sent states
+            .addCase(sendMessageViaSocket.pending, (state, action: PayloadAction<undefined, string, { arg: { message: IMessageRequest; requestType: RequestType; };}>) => {
+                // TODO: current message is sending
+            })
+            .addCase(sendMessageViaSocket.fulfilled, (state, action: PayloadAction<IMessageRequest>) => {
+                // TODO: message is successfully loaded
+            })
+            .addCase(sendMessageViaSocket.rejected, (state, action) => {
+                // TODO: Encountered some error
+            })
     }
 });
 
