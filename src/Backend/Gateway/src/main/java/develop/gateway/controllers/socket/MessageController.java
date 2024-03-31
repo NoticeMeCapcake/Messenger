@@ -24,7 +24,7 @@ public class MessageController {
         messageProducer = _messageProducer;
         dtoMapper = _dtoMapper;
     }
-    @MessageMapping("/create")
+    @MessageMapping(value = "/create")
     public void createMessage(@Payload MessageWsRequestDTO request) {
         System.out.println(request.text());
         messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(request, BaseAction.create));

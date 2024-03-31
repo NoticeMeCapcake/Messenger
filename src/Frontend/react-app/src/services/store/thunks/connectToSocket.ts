@@ -1,16 +1,8 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {RequestType} from "@/dto/RequestType";
-import IMessageRequest from "@/dto/IMessageRequest";
-import {IWebSocketConnectionState} from "@/services/store/slices/webSocketConnectionSlice";
-import IMessageResponse from "@/dto/IMessageResponse";
-import {NetworkConstants} from "@/networking/NetworkConstants";
-import {setIdMessage} from "@/services/store/slices/messagesSlice";
-import {ActivationState, CompatClient, Stomp} from "@stomp/stompjs";
 import {RootState} from "@/services/store/store";
-import SockJS from "sockjs-client";
 
-export const sendMessageViaSocket = createAsyncThunk(
-    'websocket/sendMessage',
+export const connectToSocket = createAsyncThunk(
+    'websocket/connectToSocket',
     async (_, { getState, rejectWithValue, dispatch }) => {
         console.log('GET STATE', getState());
         const state = getState() as RootState;

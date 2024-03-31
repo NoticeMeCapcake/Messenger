@@ -13,10 +13,8 @@ import {addMessage, setIdMessage} from '@/services/store/slices/messagesSlice'; 
 import IMessageRequest from '@/dto/IMessageRequest';
 import {RequestType} from "@/dto/RequestType";
 import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
-import {
-    connectSocket,
-} from "@/services/store/slices/webSocketConnectionSlice";
 import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
+import {connectToSocket} from "@/services/store/thunks/connectToSocket";
 
 
 export default function AppLayout() {
@@ -24,7 +22,7 @@ export default function AppLayout() {
     const currentUser = useAppSelector(selectCurrentUser);
 
     useEffect(() => {
-        dispatch(connectSocket({user: currentUser}))
+        dispatch(connectToSocket())
     })
 
     const messageListRef = useRef<HTMLDivElement | null>(null);
