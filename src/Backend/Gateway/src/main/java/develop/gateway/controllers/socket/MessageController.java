@@ -4,13 +4,15 @@ import develop.gateway.dto.message.MessageWsRequestDTO;
 import develop.gateway.service.DtoMapper;
 import develop.gateway.service.BaseAction;
 import develop.gateway.service.MessageProducer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@MessageMapping(value = "/message")
+@Slf4j
+//@MessageMapping(value = "/message")
 public class MessageController {
 
     private final SimpMessagingTemplate template;
@@ -24,15 +26,16 @@ public class MessageController {
         messageProducer = _messageProducer;
         dtoMapper = _dtoMapper;
     }
-    @MessageMapping(value = "/create")
+    @MessageMapping("/message/create")
     public void createMessage(@Payload MessageWsRequestDTO request) {
-        System.out.println(request.text());
+        log.info(request.text());
+//        System.out.println(request.text());
         messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(request, BaseAction.create));
 
 //        Thread.sleep(1000); // simulated delay
         template.convertAndSendToUser(
-                request.tempId(),
-                "/topic/message/" + request.userId(),
+                request.userId(),
+                "/queue/message/" + request.tempId(),
                 new Greeting("Message sent from " + request.userId())
         );
     }

@@ -26,12 +26,12 @@ export const sendMessageViaSocket = createAsyncThunk(
 
         try {
             socketClient.send(
-                `/app/message/${requestType}/`,
+                `/app/message/${requestType}`,
                 {},
                 JSON.stringify(message)
             );
             const subscription = socketClient.subscribe(
-                `user/${currentUser.id}/topic/message/${message.tempId}`,
+                `/user/${currentUser.id}/queue/message/${message.tempId}`,
                 (response) => {
                     const body = JSON.parse(response.body) as IMessageResponse;
 

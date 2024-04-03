@@ -2,6 +2,7 @@ package develop.gateway.service;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,8 +18,8 @@ public class KafkaMessageListener {
         System.out.println("Received message: " + messageInfo.messageDTO().text());
         var messageDto = messageInfo.messageDTO();
         template.convertAndSendToUser(
-                messageInfo.messageDTO().tempId(),
-                "/" + messageInfo.messageDTO().userId() +"/topic/message/",
+                messageInfo.messageDTO().userId(),
+                "/queue/message/" + messageInfo.messageDTO().tempId(),
                 new MessageResponseDTO(messageDto.id(),
                         messageDto.tempId(),
                         messageDto.userId(),

@@ -39,7 +39,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: qwerty
       MONGO_INITDB_DATABASE: messenger
-
+    command: 'mongosh admin -u root -p qwerty --authenticationDatabase admin << "db.createUser({user: "messenger", pwd: "qwerty", roles: [{role: "readWrite", db: "*"}]})"'
 volumes:
   zookeeper_data:
     driver: local

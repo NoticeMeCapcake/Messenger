@@ -13,10 +13,10 @@ export const connectToSocket = createAsyncThunk(
             socketClient.connect({}, () => {
                     console.log('Connected!');
                     alert('Connected!');
-                    socketClient.subscribe("/user/" + currentUser.token ?? "" + '/topic/message', (greeting) => {
-                        // console.log("Received: " + (JSON.parse(greeting.body) as ).content)
-                        alert("Received msg");
-                    });
+                    // socketClient.subscribe("/user/" + currentUser.token ?? "" + '/topic/message', (greeting) => {
+                    //     console.log("Received: " + (JSON.parse(greeting.body) as ).content)
+                        // alert("Received msg: " + greeting.body);
+                    // });
                 },
                 () => {console.log("Error")}
             );
