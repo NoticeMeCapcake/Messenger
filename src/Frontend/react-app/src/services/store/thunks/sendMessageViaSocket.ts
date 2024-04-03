@@ -31,13 +31,13 @@ export const sendMessageViaSocket = createAsyncThunk(
                 JSON.stringify(message)
             );
             const subscription = socketClient.subscribe(
-                `/user/${currentUser.id}/queue/message/${message.tempId}`,
+                `/user/queue/message${message.tempId}`,
                 (response) => {
                     const body = JSON.parse(response.body) as IMessageResponse;
 
-                    dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
-
                     alert("New message id: " + body.id);
+
+                    dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
                 }
             );
 

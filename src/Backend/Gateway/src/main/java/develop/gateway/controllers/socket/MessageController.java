@@ -5,6 +5,7 @@ import develop.gateway.service.DtoMapper;
 import develop.gateway.service.BaseAction;
 import develop.gateway.service.MessageProducer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -27,10 +28,11 @@ public class MessageController {
         dtoMapper = _dtoMapper;
     }
     @MessageMapping("/message/create")
-    public void createMessage(@Payload MessageWsRequestDTO request) {
+    public void createMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
         log.info(request.text());
+        log.info("session id " + sessionId);
 //        System.out.println(request.text());
-        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(request, BaseAction.create));
+        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.create));
 
 //        Thread.sleep(1000); // simulated delay
         template.convertAndSendToUser(

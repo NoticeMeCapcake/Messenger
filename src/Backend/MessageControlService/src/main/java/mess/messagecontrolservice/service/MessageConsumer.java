@@ -1,5 +1,6 @@
 package mess.messagecontrolservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import mess.messagecontrolservice.dto.KafkaMessageDTO;
 import mess.messagecontrolservice.entity.MessageEntity;
 import mess.messagecontrolservice.repository.ChatRepository;
@@ -9,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 @Component
+@Slf4j
 public class MessageConsumer {
     @Autowired
     private MessageProducer messageProducer;
@@ -17,11 +22,13 @@ public class MessageConsumer {
 
     @KafkaListener(topics = "test-process-message", groupId = "message-control-service", containerFactory = "kafkaListenerContainerFactoryMessage")
     public void listenMessage(KafkaMessageInfo messageInfo) {
-        System.out.println("Received message: " + messageInfo.messageDTO().text());
+        log.info("Received message: " + messageInfo.messageDTO().text());
         var messageDto = (KafkaMessageDTO) MessageActionResolver.resolveAction(messageInfo);
+        log.info(LocalDateTime.ofEpochSecond(messageDto.createdAt(), 0, ZoneOffset.UTC).toString());
         messageProducer.sendMessage("message-info-topic", new KafkaMessageInfo(
                 messageInfo.action(),
-                messageDto
+                messageDto,
+                messageInfo.sessionId()
         ));
     }
 

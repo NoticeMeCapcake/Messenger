@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneOffset;
 import java.util.function.Function;
 
 @Component
@@ -43,10 +44,10 @@ public class MessageActionResolver {
         repository.insert(insertingObject);
         return new KafkaMessageDTO(insertingObject.getId(),
                 messageDTO.tempId(),
-                messageDTO.tempId(),
+                messageDTO.userId(),
                 messageDTO.chatId(),
                 messageDTO.text(),
-                insertingObject.getCreatedAt());
+                insertingObject.getCreatedAt().toEpochSecond(ZoneOffset.UTC));
     }
 
     private static Object doUpdate(KafkaMessageDTO messageDTO) {
@@ -58,7 +59,7 @@ public class MessageActionResolver {
                 messageDTO.tempId(),
                 messageDTO.chatId(),
                 messageDTO.text(),
-                entity.getCreatedAt());
+                entity.getCreatedAt().toEpochSecond(ZoneOffset.UTC));
     }
 
     private static Object doDelete(KafkaMessageDTO messageDTO) {
@@ -73,6 +74,6 @@ public class MessageActionResolver {
                 messageDTO.tempId(),
                 messageDTO.chatId(),
                 messageDTO.text(),
-                entity.getCreatedAt());
+                entity.getCreatedAt().toEpochSecond(ZoneOffset.UTC));
     }
 }

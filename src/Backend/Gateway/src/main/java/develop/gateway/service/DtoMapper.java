@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DtoMapper {
-    public MessageInfo messageRequestToMessageInfo(MessageWsRequestDTO request, BaseAction action) {
+    public MessageInfo messageRequestToMessageInfo(String sessionId, MessageWsRequestDTO request, BaseAction action) {
         return new MessageInfo(
                 action,
                 new KafkaMessageDTO(
@@ -15,9 +15,10 @@ public class DtoMapper {
                         request.text(),
                         request.userId(),
                         request.chatId(),
-                        null
+                        0
 
-                )
+                ),
+                sessionId
         );
     }
 }
