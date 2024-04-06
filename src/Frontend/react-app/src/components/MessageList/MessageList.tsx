@@ -62,7 +62,7 @@ const MessageList: FC<IProps> = ({scrollAreaRef, scrollMessageListToBottom}) => 
                                                 </div>
 
                                             </div>
-                                        </div>}/>
+                                        </div>} currentMessage={message}/>
                                     )
                                 }
                             )

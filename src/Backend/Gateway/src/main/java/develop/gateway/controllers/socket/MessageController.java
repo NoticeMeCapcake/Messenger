@@ -41,6 +41,13 @@ public class MessageController {
 //        System.out.println(request.text());
         messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.getAll));
     }
+    @MessageMapping("/message/delete")
+    public void deleteMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+        log.info(request.text());
+        log.info("session id " + sessionId);
+//        System.out.println(request.text());
+        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.delete));
+    }
 
 //    @Scheduled(fixedRate = 2000)
 //    public void sendGreetings() {

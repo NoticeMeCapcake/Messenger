@@ -21,7 +21,11 @@ public class KafkaMessageListener {
         log.info("Received message: " + messageInfo.messageDTO()[0].text());
         var messageDto = messageInfo.messageDTO();
         template.convertAndSend(
-                "/queue/message" + (messageInfo.action() == BaseAction.getAll ? "/all" + messageDto[0].chatId() : messageDto[0].tempId()) + "-user" + messageInfo.sessionId(),
+                "/queue/message" + (messageInfo.action() == BaseAction.getAll
+                        ? "/all" + messageDto[0].chatId()
+                        : (messageInfo.action() == BaseAction.delete
+                        ? "/delete" + messageDto[0].id()
+                        : messageDto[0].tempId())) + "-user" + messageInfo.sessionId(),
                 messageInfo.action() == BaseAction.getAll
                         ? Arrays.stream(messageDto).map(message ->
                             new MessageResponseDTO(message.id(),

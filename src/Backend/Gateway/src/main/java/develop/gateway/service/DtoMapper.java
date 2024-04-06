@@ -10,7 +10,7 @@ public class DtoMapper {
         return new MessageInfoRequest(
                 action,
                 new KafkaMessageDTO(
-                        null,
+                        request.id(),
                         request.tempId(),
                         request.text(),
                         request.userId(),
