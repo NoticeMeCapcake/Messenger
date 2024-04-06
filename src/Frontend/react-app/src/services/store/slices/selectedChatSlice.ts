@@ -9,9 +9,9 @@ export interface ISelectedChatState {
 
 const initialState = {
     selectedChat: {
-        id: "42",
-        users: ["42", "21"],
-        chatName: "templateChat",
+        id: null,
+        users: [],
+        chatName: "",
         type: ChatType.Personal
     }
 } satisfies ISelectedChatState as ISelectedChatState
@@ -31,6 +31,6 @@ export const selectedChatSlice = createSlice({
 
 export const { setSelectedChat, unsetSelectedChat } = selectedChatSlice.actions;
 
-export const selectSelectedChat = (state: RootState) => state.selectedChat.selectedChat as IChatInfo | null;
+export const selectSelectedChat = (state: RootState) => state.selectedChat.selectedChat as IChatInfo;
 
 export const selectedChatReducer = selectedChatSlice.reducer ;

@@ -1,11 +1,9 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {RequestType} from "@/dto/RequestType";
 import IMessageRequest from "@/dto/IMessageRequest";
-import {IWebSocketConnectionState} from "@/services/store/slices/webSocketConnectionSlice";
 import IMessageResponse from "@/dto/IMessageResponse";
 import {NetworkConstants} from "@/networking/NetworkConstants";
-import {setIdMessage} from "@/services/store/slices/messagesSlice";
-import {CompatClient} from "@stomp/stompjs";
+import {setCreatedTimeMessage, setIdMessage} from "@/services/store/slices/messagesSlice";
 import {RootState} from "@/services/store/store";
 
 export const sendMessageViaSocket = createAsyncThunk(
@@ -13,7 +11,6 @@ export const sendMessageViaSocket = createAsyncThunk(
     async ({requestType, message} : {requestType: RequestType, message: IMessageRequest}, { getState, rejectWithValue, dispatch }) => {
         console.log('GET STATE', getState());
         const state = getState() as RootState;
-        // const { socketClient, currentUser } = state;
         const {socketClient } = state.webSocketConnection;
         const currentUser = state.currentUser.currentUser;
 
@@ -22,7 +19,6 @@ export const sendMessageViaSocket = createAsyncThunk(
             return rejectWithValue('socket or current user is null');
         }
         console.log("After check")
-
 
         try {
             socketClient.send(
@@ -38,12 +34,22 @@ export const sendMessageViaSocket = createAsyncThunk(
                     alert("New message id: " + body.id);
 
                     dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
+                    dispatch(setCreatedTimeMessage({id: body.id, createdAt: new Date((body.createdAt + NetworkConstants.timeZoneOffsetInSeconds) * 1000)}));
+                    subscription.unsubscribe();
                 }
             );
 
             setTimeout(() => {
                 subscription.unsubscribe();
-                //TODO: add error to msg
+                (getState() as RootState).messages.messages.map(
+                    storedMsg => {
+                        if (storedMsg.tempId === message.tempId) {
+                            if (!storedMsg.id) { //
+                                alert("sending message failure");
+                            }
+                        }
+                    }
+                );
             }, NetworkConstants.subTimeout);
             return message;
         } catch (error) {

@@ -33,13 +33,13 @@ public class MessageController {
         log.info("session id " + sessionId);
 //        System.out.println(request.text());
         messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.create));
-
-//        Thread.sleep(1000); // simulated delay
-        template.convertAndSendToUser(
-                request.userId(),
-                "/queue/message/" + request.tempId(),
-                new Greeting("Message sent from " + request.userId())
-        );
+    }
+    @MessageMapping("/message/get-all")
+    public void getAllMessages(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+        log.info(request.text());
+        log.info("session id " + sessionId);
+//        System.out.println(request.text());
+        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.getAll));
     }
 
 //    @Scheduled(fixedRate = 2000)

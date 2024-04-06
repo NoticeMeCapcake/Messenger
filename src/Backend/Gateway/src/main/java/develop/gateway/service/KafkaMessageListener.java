@@ -3,10 +3,9 @@ package develop.gateway.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
+import java.util.Arrays;
 
 @Component
 @Slf4j
@@ -18,17 +17,25 @@ public class KafkaMessageListener {
     }
 
     @KafkaListener(topics = "message-info-topic", groupId = "gateway-service", containerFactory = "kafkaListenerContainerFactoryMessage")
-    public void listenMessage(MessageInfo messageInfo) {
-        log.info("Received message: " + messageInfo.messageDTO().text());
+    public void listenMessage(MessageInfoResponse messageInfo) {
+        log.info("Received message: " + messageInfo.messageDTO()[0].text());
         var messageDto = messageInfo.messageDTO();
-        log.info("/user/"+messageInfo.sessionId()+"/queue/message" + messageInfo.messageDTO().tempId());
         template.convertAndSend(
-                "/queue/message" + messageDto.tempId() + "-user" + messageInfo.sessionId(),
-                new MessageResponseDTO(messageDto.id(),
-                        messageDto.tempId(),
-                        messageDto.userId(),
-                        messageDto.chatId(),
-                        messageDto.text())
+                "/queue/message" + (messageInfo.action() == BaseAction.getAll ? "/all" + messageDto[0].chatId() : messageDto[0].tempId()) + "-user" + messageInfo.sessionId(),
+                messageInfo.action() == BaseAction.getAll
+                        ? Arrays.stream(messageDto).map(message ->
+                            new MessageResponseDTO(message.id(),
+                            message.tempId(),
+                            message.userId(),
+                            message.chatId(),
+                            message.text(),
+                            message.createdAt()))
+                        : new MessageResponseDTO(messageDto[0].id(),
+                        messageDto[0].tempId(),
+                        messageDto[0].userId(),
+                        messageDto[0].chatId(),
+                        messageDto[0].text(),
+                        messageDto[0].createdAt())
         );
     }
 }

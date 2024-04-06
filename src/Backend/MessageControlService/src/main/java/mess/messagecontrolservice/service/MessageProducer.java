@@ -1,18 +1,17 @@
 package mess.messagecontrolservice.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class MessageProducer {
 
-    private final KafkaTemplate<String, KafkaMessageInfo> kafkaTemplate;
+    private final KafkaTemplate<String, KafkaMessageInfoResponse> kafkaTemplate;
 
-    public MessageProducer(@Autowired KafkaTemplate<String, KafkaMessageInfo> _kafkaTemplate) {
-        kafkaTemplate = _kafkaTemplate;
-    }
-    public void sendMessage(String topic, KafkaMessageInfo messageInfo) {
+    public void sendMessage(String topic, KafkaMessageInfoResponse messageInfo) {
         kafkaTemplate.send(topic, messageInfo);
     }
 

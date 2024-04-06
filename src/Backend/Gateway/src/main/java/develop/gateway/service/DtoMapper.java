@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DtoMapper {
-    public MessageInfo messageRequestToMessageInfo(String sessionId, MessageWsRequestDTO request, BaseAction action) {
-        return new MessageInfo(
+    public MessageInfoRequest messageRequestToMessageInfo(String sessionId, MessageWsRequestDTO request, BaseAction action) {
+        return new MessageInfoRequest(
                 action,
                 new KafkaMessageDTO(
                         null,

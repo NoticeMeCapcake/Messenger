@@ -1,6 +1,6 @@
 "use client";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ChatList from "@/components/DialogueArea/ChatList";
+import ChatList from "@/components/ChatList/ChatList";
 import MessageList from "@/components/MessageList/MessageList";
 import React, {useCallback, useEffect, useRef} from 'react';
 import Title from "@/components/ChatHeader/Title";
@@ -9,20 +9,27 @@ import {SideMenu} from "@/components/SideMenu/SideMenu";
 import GroupSelector from "@/components/GroupSelector/GroupSelector";
 import Searcher from "@/components/Searcher/Searcher";
 import {useAppDispatch, useAppSelector} from '@/services/store/types/hooks';
-import {addMessage, setIdMessage} from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
+import {addMessage} from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
 import IMessageRequest from '@/dto/IMessageRequest';
 import {RequestType} from "@/dto/RequestType";
 import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
 import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
 import {connectToSocket} from "@/services/store/thunks/connectToSocket";
+import {selectSelectedChat} from "@/services/store/slices/selectedChatSlice";
+import {getMessagesFromChat} from "@/services/store/thunks/getMessagesFromChat";
+import {wait} from "next/dist/lib/wait";
 
 
 export default function AppLayout() {
     const dispatch = useAppDispatch();
     const currentUser = useAppSelector(selectCurrentUser);
+    const currentChat = useAppSelector(selectSelectedChat);
 
     useEffect(() => {
-        dispatch(connectToSocket())
+        dispatch(connectToSocket());
+        // wait(300).then( () =>
+        //     dispatch(getMessagesFromChat({requestType: RequestType.GetAll, message: {chatId: currentChat.id ?? "0"}}))
+        // )
     })
 
     const messageListRef = useRef<HTMLDivElement | null>(null);
@@ -38,15 +45,15 @@ export default function AppLayout() {
 
     const adjustMessageListSize = () => {
         const messageList = messageListRef.current;
-        console.log("adjustMessageListSize");
+        // console.log("adjustMessageListSize");
 
         if (!messageList) return;
 
-        console.log(`calc(100vh - ${titleRef.current?.clientHeight ?? 0}px - ${inputContainerRef.current?.clientHeight ?? 0}px - 20px)`)
+        // console.log(`calc(100vh - ${titleRef.current?.clientHeight ?? 0}px - ${inputContainerRef.current?.clientHeight ?? 0}px - 20px)`)
 
         messageList.style.height = `calc(100vh - ${titleRef.current?.clientHeight ?? 0}px - ${inputContainerRef.current?.clientHeight ?? 0}px - 20px)`;
-        console.log(messageList.style.height);
-        console.log("scrolled")
+        // console.log(messageList.style.height);t
+        // console.log("scrolled")
     }
 
     return (
@@ -80,10 +87,10 @@ export default function AppLayout() {
                     </div>
                     <div ref={inputContainerRef} className="align-self-end">
                             <SendMessageForm scrollMessageListToBottom={scrollToNewMessage} adjustMessageListSize={adjustMessageListSize} initialText={''} sendMessage={(text: string): void => {
-                                console.log(text)
-                                console.log("in set text: ", messageListScrollAreaRef.current?.scrollHeight);
-                                const payload : IMessageRequest = {id: null, tempId: Math.floor(Math.random() * 10000).toString(), userId: "42", chatId: "42", text: text};
-                                dispatch(addMessage({id: null, tempId: payload.tempId, chatId: "42", senderId: "42", senderName: "", text: text}))
+                                // console.log(text)
+                                // console.log("in set text: ", messageListScrollAreaRef.current?.scrollHeight);
+                                const payload : IMessageRequest = {id: null, tempId: Math.floor(Math.random() * 10000).toString(), userId: currentUser.id, chatId: currentChat.id ?? "0", text: text};
+                                dispatch(addMessage({id: null, tempId: payload.tempId ?? "0", chatId: currentChat.id ?? "0", senderId: currentUser.id, senderName: currentUser.username, text: text}))
                                 console.log("Will send: " + JSON.stringify(payload));
                                 dispatch(sendMessageViaSocket({message: payload, requestType: RequestType.Create}));
                             }} />

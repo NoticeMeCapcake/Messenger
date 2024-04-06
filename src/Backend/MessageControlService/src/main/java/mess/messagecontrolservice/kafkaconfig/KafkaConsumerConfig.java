@@ -1,6 +1,6 @@
 package mess.messagecontrolservice.kafkaconfig;
 
-import mess.messagecontrolservice.service.KafkaMessageInfo;
+import mess.messagecontrolservice.service.KafkaMessageInfoRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -17,24 +17,24 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, KafkaMessageInfo> consumerMessageFactory() {
+    public ConsumerFactory<String, KafkaMessageInfoRequest> consumerMessageFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "message-control-service");
 //        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 //        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new JsonDeserializer<>(KafkaMessageInfo.class));
+        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new JsonDeserializer<>(KafkaMessageInfoRequest.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfo> kafkaListenerContainerFactoryMessage() {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfo> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfoRequest> kafkaListenerContainerFactoryMessage() {
+        ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfoRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerMessageFactory());
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, KafkaMessageInfo> consumerChatFactory() {
+    public ConsumerFactory<String, KafkaMessageInfoRequest> consumerChatFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "message-control-service");
@@ -43,13 +43,13 @@ public class KafkaConsumerConfig {
         configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, KafkaMessageInfo.class.getName());
+        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, KafkaMessageInfoRequest.class.getName());
         return new DefaultKafkaConsumerFactory<>(configProps/*, new StringDeserializer(), new JsonDeserializer<>(KafkaMessageInfo.class)*/);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfo> kafkaListenerContainerFactoryChat() {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfo> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfoRequest> kafkaListenerContainerFactoryChat() {
+        ConcurrentKafkaListenerContainerFactory<String, KafkaMessageInfoRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerMessageFactory());
         return factory;
     }

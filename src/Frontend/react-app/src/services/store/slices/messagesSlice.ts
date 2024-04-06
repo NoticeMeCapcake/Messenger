@@ -11,17 +11,6 @@ export interface IChatMessageState {
 
 const initialState: IChatMessageState = {
     messages: [
-        {
-            id: "123",
-            tempId: "123",
-            senderName: "Template Name",
-            senderId: "42",
-            chatId: "42",
-            text: "Template text",
-            loading: false,
-            error: false,
-            isRead: true
-        }
     ]
 }
 
@@ -50,6 +39,11 @@ export const messagesSlice = createSlice({
             state.messages = state.messages.map(message =>
               message.tempId === action.payload.tempId ?
                 { ...message, id: action.payload.id } : message);
+        },
+        setCreatedTimeMessage: (state, action: PayloadAction<{id: string, createdAt: Date}>) => {
+            state.messages = state.messages.map(message =>
+                message.id === action.payload.id ?
+                    { ...message, createdAt: action.payload.createdAt } : message);
         }
     },
     extraReducers: (builder) => {
@@ -66,7 +60,7 @@ export const messagesSlice = createSlice({
     }
 });
 
-export const { addMessage, setMessages, removeMessage, clearMessages, modifyMessage, setIdMessage } = messagesSlice.actions;
+export const { addMessage, setMessages, removeMessage, clearMessages, modifyMessage, setIdMessage, setCreatedTimeMessage } = messagesSlice.actions;
 
 export const selectMessages = (state: RootState) => state.messages.messages;
 

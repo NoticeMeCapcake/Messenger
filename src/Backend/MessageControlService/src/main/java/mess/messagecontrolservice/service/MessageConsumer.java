@@ -21,13 +21,13 @@ public class MessageConsumer {
 
 
     @KafkaListener(topics = "test-process-message", groupId = "message-control-service", containerFactory = "kafkaListenerContainerFactoryMessage")
-    public void listenMessage(KafkaMessageInfo messageInfo) {
+    public void listenMessage(KafkaMessageInfoRequest messageInfo) {
         log.info("Received message: " + messageInfo.messageDTO().text());
-        var messageDto = (KafkaMessageDTO) MessageActionResolver.resolveAction(messageInfo);
-        log.info(LocalDateTime.ofEpochSecond(messageDto.createdAt(), 0, ZoneOffset.UTC).toString());
-        messageProducer.sendMessage("message-info-topic", new KafkaMessageInfo(
+        var messageDTOs = (KafkaMessageDTO[]) MessageActionResolver.resolveAction(messageInfo);
+//        log.info(LocalDateTime.ofEpochSecond(messageDto.createdAt(), 0, ZoneOffset.UTC).toString());
+        messageProducer.sendMessage("message-info-topic", new KafkaMessageInfoResponse(
                 messageInfo.action(),
-                messageDto,
+                messageDTOs,
                 messageInfo.sessionId()
         ));
     }

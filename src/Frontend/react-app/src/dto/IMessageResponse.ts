@@ -4,5 +4,6 @@ interface IMessageResponse  {
     userId: string;
     chatId: string;
     text: string;
+    createdAt: number;
 }
 export default IMessageResponse;

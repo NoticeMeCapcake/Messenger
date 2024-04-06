@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/services/store/types/hooks';
 import ChatType from '@/dto/ChatType';
 
 
-const GroupSelector = ({groupListSetter}: IProps) => {
+const GroupSelector = () => {
     const dispatch = useAppDispatch();
     const selectedChatType = useAppSelector(selectSelectedChatType);
 

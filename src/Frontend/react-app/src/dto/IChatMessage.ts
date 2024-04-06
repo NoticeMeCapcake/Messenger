@@ -8,4 +8,5 @@ export default interface IChatMessage {
     isRead?: boolean;
     error?: boolean;
     loading?: boolean;
+    createdAt?: Date;
 }

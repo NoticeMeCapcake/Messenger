@@ -2,10 +2,7 @@ package develop.gateway.controllers.rest;
 
 
 import develop.gateway.dto.service.ServiceDto;
-import develop.gateway.service.MessageInfo;
-import develop.gateway.service.MessageProducer;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import develop.gateway.service.MessageInfoRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +16,7 @@ public class MainServiceGateController {
 
     @PostMapping
     @ResponseBody
-    public ServiceDto.Request.Public serviceEndpoint(@RequestBody MessageInfo messageInfo) {
+    public ServiceDto.Request.Public serviceEndpoint(@RequestBody MessageInfoRequest messageInfo) {
         System.out.println(messageInfo.messageDTO().text());
 //        messageProducer.sendMessage("test-process-message", messageInfo);
         // отправить в прокси, который разберётся, в какой сервис отдать

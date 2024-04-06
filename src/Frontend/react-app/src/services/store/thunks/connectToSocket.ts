@@ -1,26 +1,27 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {RootState} from "@/services/store/store";
+import {INotificationDto} from "@/dto/INotificationDto";
 
 export const connectToSocket = createAsyncThunk(
     'websocket/connectToSocket',
     async (_, { getState, rejectWithValue, dispatch }) => {
         console.log('GET STATE', getState());
         const state = getState() as RootState;
-        // const { socketClient, currentUser } = state;
         const {socketClient } = state.webSocketConnection;
-        const currentUser = state.currentUser.currentUser;
         try {
             socketClient.connect({}, () => {
                     console.log('Connected!');
                     alert('Connected!');
-                    // socketClient.subscribe("/user/" + currentUser.token ?? "" + '/topic/message', (greeting) => {
-                    //     console.log("Received: " + (JSON.parse(greeting.body) as ).content)
-                        // alert("Received msg: " + greeting.body);
-                    // });
+                    // manage notifications
+                    socketClient.subscribe("/user/queue/notification", (notificationMessage) => {
+                        const notification = JSON.parse(notificationMessage.body) as INotificationDto;
+                        alert("Received notification: " + notification);
+                    });
                 },
-                () => {console.log("Error")}
+                () => {alert("Error")}
             );
         } catch (error) {
+            alert("Can not connect");
             return rejectWithValue('can not connect')
         }
 
