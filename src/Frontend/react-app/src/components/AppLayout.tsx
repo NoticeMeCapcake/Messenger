@@ -18,6 +18,7 @@ import {connectToSocket} from "@/services/store/thunks/connectToSocket";
 import {selectSelectedChat} from "@/services/store/slices/selectedChatSlice";
 import {getMessagesFromChat} from "@/services/store/thunks/getMessagesFromChat";
 import {wait} from "next/dist/lib/wait";
+import CreateChatPopup from "@/components/CreateChatPopup/CreateChatPopup";
 
 
 export default function AppLayout() {
@@ -66,7 +67,10 @@ export default function AppLayout() {
                             <div className="col-auto">
                                 <SideMenu/>
                             </div>
-                            <div className="col-7 align-self-center">
+                            <div className="col-auto">
+                                <CreateChatPopup/>
+                            </div>
+                            <div className="col-6 align-self-center">
                                 <Searcher/>
                             </div>
                         </div>
