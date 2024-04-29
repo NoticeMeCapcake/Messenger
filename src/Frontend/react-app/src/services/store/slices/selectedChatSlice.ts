@@ -12,7 +12,7 @@ const initialState = {
         id: null,
         users: [],
         chatName: "",
-        type: ChatType.Personal
+        type: ChatType.personal
     }
 } satisfies ISelectedChatState as ISelectedChatState
 

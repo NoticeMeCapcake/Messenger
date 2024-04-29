@@ -7,7 +7,7 @@ export interface ISelectedChatTypeInfoState {
 }
 
 const initialState = {
-    selectedChatType: ChatType.All
+    selectedChatType: ChatType.all
 } satisfies ISelectedChatTypeInfoState as ISelectedChatTypeInfoState
 
 export const selectedChatTypeSlice = createSlice({
@@ -18,7 +18,7 @@ export const selectedChatTypeSlice = createSlice({
             state.selectedChatType = action.payload;
         },
         unsetSelectedChatType: (state) => {
-            state.selectedChatType = ChatType.All;
+            state.selectedChatType = ChatType.all;
         }
     }
 });

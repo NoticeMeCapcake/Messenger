@@ -1,6 +1,6 @@
 export enum RequestType {
     Get = "get",
-    GetAll = "get-all",
+    GetAll = "getAll",
     Create = "create",
     Update = "update",
     Delete = "delete"

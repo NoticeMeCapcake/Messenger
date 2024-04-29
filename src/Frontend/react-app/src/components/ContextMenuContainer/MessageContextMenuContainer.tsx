@@ -4,8 +4,11 @@ import "./style.css";
 import IChatMessage from "@/dto/IChatMessage";
 import {useAppDispatch} from "@/services/store/types/hooks";
 import IMessageRequest from "@/dto/IMessageRequest";
-import {sendDeleteMessage} from "@/services/store/thunks/sendDeleteMessage";
 import {RequestType} from "@/dto/RequestType";
+import {IMessage} from "@stomp/stompjs";
+import IMessageResponse from "@/dto/IMessageResponse";
+import {removeMessage} from "@/services/store/slices/messagesSlice";
+import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
 
 interface IProps {
     messageSlot: ReactNode,
@@ -14,6 +17,15 @@ interface IProps {
 
 export const MessageContextMenuContainer = (props : IProps) => {
     const dispatch = useAppDispatch();
+
+    const deleteMsgCallback = (response: IMessage) => {
+        const body = JSON.parse(response.body) as IMessageResponse;
+
+        alert("Deleted message id: " + body.id);
+
+        dispatch(removeMessage(body.id));
+    }
+
     return <ContextMenu.Root>
         <ContextMenu.Trigger>
             {props.messageSlot}
@@ -24,8 +36,8 @@ export const MessageContextMenuContainer = (props : IProps) => {
                     Select
                 </ContextMenu.Item>
                 <ContextMenu.Item className="ContextMenuItem" onClick={() => {
-                    const messageRequest = {id: props.currentMessage.id} as IMessageRequest;
-                    dispatch(sendDeleteMessage({requestType: RequestType.Delete, message: messageRequest}))
+                    const messageRequest = {id: props.currentMessage.id, action: RequestType.Delete} as IMessageRequest;
+                    dispatch(sendMessageViaSocket({callback: deleteMsgCallback, message: messageRequest}))
                 }}>
                     Delete
                 </ContextMenu.Item>

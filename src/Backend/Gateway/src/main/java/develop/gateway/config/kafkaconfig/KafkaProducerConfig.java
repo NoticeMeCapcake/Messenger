@@ -1,6 +1,7 @@
 package develop.gateway.config.kafkaconfig;
 
-import develop.gateway.service.MessageInfoRequest;
+import develop.gateway.service.types.KafkaInfoRequest;
+import develop.gateway.service.types.MessageInfoRequest;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +16,15 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
     @Bean
-    public ProducerFactory<String, MessageInfoRequest> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
-        var serializer = new JsonSerializer<MessageInfoRequest>();
+        var serializer = new JsonSerializer<>();
         serializer.setAddTypeInfo(false);
         return new DefaultKafkaProducerFactory<>(configProps, new StringSerializer(), serializer);
     }
     @Bean
-    public KafkaTemplate<String, MessageInfoRequest> kafkaTemplateMessage() {
+    public KafkaTemplate<String, Object> kafkaTemplateMessage() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

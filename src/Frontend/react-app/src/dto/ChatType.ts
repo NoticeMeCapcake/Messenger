@@ -1,5 +1,5 @@
 enum ChatType {
-    All = "all", Personal = "personal", Groups = "group", Channels = "channel"
+    all = "all", personal = "personal", group = "group", channel = "channel"
 }
 
 export default ChatType

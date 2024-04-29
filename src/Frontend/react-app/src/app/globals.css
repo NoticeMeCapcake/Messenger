@@ -23,8 +23,21 @@ body {
   background-color: #443646;
 }
 
+.dark-hover {
+  background-color: inherit;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.dark-hover:hover {
+  background-color: rgba(46, 46, 46, 0.81);
+}
+
 .light-bg {
   background-color: #503185;
+}
+
+.blur-bg {
+  backdrop-filter: blur(6px);
 }
 
 .cursor-pointer {

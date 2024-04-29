@@ -3,7 +3,7 @@ import { RootState } from '@/services/store/store';
 import ChatType from '@/dto/ChatType';
 
 export interface IChatInfo {
-    id: string | null;
+    id: string;
     users: string[];
     chatName: string;
     type: ChatType;
@@ -18,12 +18,12 @@ const initialState = {
         id: "42",
         users: ["42", "21"],
         chatName: "templateChat",
-        type: ChatType.Personal
+        type: ChatType.personal
     }, {
         id: "43",
         users: ["42", "22", "21"],
         chatName: "templateChat2",
-        type: ChatType.Groups
+        type: ChatType.group
     } ]
 } satisfies IChatInfoState as IChatInfoState
 

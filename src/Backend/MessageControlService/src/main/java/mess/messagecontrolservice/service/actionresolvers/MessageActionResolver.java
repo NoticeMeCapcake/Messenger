@@ -1,43 +1,40 @@
-package mess.messagecontrolservice.service.messages;
+package mess.messagecontrolservice.service.actionresolvers;
 
+import lombok.RequiredArgsConstructor;
 import mess.messagecontrolservice.dto.KafkaMessageDTO;
 import mess.messagecontrolservice.entity.MessageEntity;
 import mess.messagecontrolservice.repository.MessageRepository;
-import mess.messagecontrolservice.service.KafkaMessageInfoRequest;
+import mess.messagecontrolservice.service.types.KafkaInfoRequest;
+import mess.messagecontrolservice.service.types.KafkaMessageInfoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
-@Scope("singleton")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@Scope("prototype")
 public class MessageActionResolver {
-    private static MessageRepository repository;
+    private final MessageRepository repository;
 
-    private MessageActionResolver(@Autowired MessageRepository _repository) {
-        repository = _repository;
-    }
-
-    public static Object resolveAction(KafkaMessageInfoRequest messageInfo) {
+    public Object resolveAction(KafkaMessageInfoRequest messageInfo) {
         Function<KafkaMessageDTO, Object> action = switch (messageInfo.action()) {
-            case create -> MessageActionResolver::doCreate;
-            case get -> MessageActionResolver::doGet;
-            case getAll -> MessageActionResolver::doGetAll;
-            case update -> MessageActionResolver::doUpdate;
-            case delete -> MessageActionResolver::doDelete;
+            case create -> this::doCreate;
+            case get -> this::doGet;
+            case getAll -> this::doGetAll;
+            case update -> this::doUpdate;
+            case delete -> this::doDelete;
         };
         return doAction(action, messageInfo.messageDTO());
     }
 
-    public static Object doAction(Function<KafkaMessageDTO, Object> action, KafkaMessageDTO messageDTO) {
+    public Object doAction(Function<KafkaMessageDTO, Object> action, KafkaMessageDTO messageDTO) {
         return action.apply(messageDTO);
     }
 
-    private static Object doCreate(KafkaMessageDTO messageDTO) { // todo: check for exceptions
+    private Object doCreate(KafkaMessageDTO messageDTO) { // todo: check for exceptions
         var insertingObject = MessageEntity.builder()
                 .text(messageDTO.text())
                 .isRead(false)
@@ -54,7 +51,7 @@ public class MessageActionResolver {
                 insertingObject.getCreatedAt().toEpochSecond(ZoneOffset.UTC))};
     }
 
-    private static Object doUpdate(KafkaMessageDTO messageDTO) {
+    private Object doUpdate(KafkaMessageDTO messageDTO) {
         var entity = repository.findById(messageDTO.id()).orElseThrow();
         entity.setText(messageDTO.text());
         repository.save(entity);
@@ -66,12 +63,12 @@ public class MessageActionResolver {
                 entity.getCreatedAt().toEpochSecond(ZoneOffset.UTC))};
     }
 
-    private static Object doDelete(KafkaMessageDTO messageDTO) {
+    private Object doDelete(KafkaMessageDTO messageDTO) {
         repository.deleteById(messageDTO.id());
         return new KafkaMessageDTO[]{messageDTO};
     }
 
-    private static Object doGet(KafkaMessageDTO messageDTO) {
+    private Object doGet(KafkaMessageDTO messageDTO) {
         var entity = repository.findById(messageDTO.id()).orElseThrow();
         return new KafkaMessageDTO[]{new KafkaMessageDTO(entity.getId(),
                 null,
@@ -80,7 +77,7 @@ public class MessageActionResolver {
                 entity.getText(),
                 entity.getCreatedAt().toEpochSecond(ZoneOffset.UTC))};
     }
-    private static Object doGetAll(KafkaMessageDTO messageDTO) {
+    private Object doGetAll(KafkaMessageDTO messageDTO) {
         var entities = repository.getAllByChatId(messageDTO.chatId());
         return entities.stream().map(
                 entity -> new KafkaMessageDTO(entity.getId(),

@@ -4,12 +4,7 @@ import SockJS from 'sockjs-client';
 import {ActivationState, CompatClient, Stomp, StompSubscription} from '@stomp/stompjs';
 import {IUserInfo} from '@/services/store/slices/currentUserSlice';
 import IMessageRequest from '@/dto/IMessageRequest';
-import {RequestType} from '@/dto/RequestType';
-import IChatRequest from "@/dto/IChatRequest";
 import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
-import IMessageResponse from "@/dto/IMessageResponse";
-import {setIdMessage} from "@/services/store/slices/messagesSlice";
-import {NetworkConstants} from "@/networking/NetworkConstants";
 
 //TODO: make a cool callback function onConnect to parse responses for message read state etc.
 
@@ -69,13 +64,6 @@ export const webSocketConnectionSlice = createSlice({
         //       JSON.stringify(action.payload.message)
         //     ) ?? alert("socket is null"); // P.S. смотреть сюда и в AppLayout, где вызывается этот редьсер. И, да, тут пробрасывается алерт
         // },
-        sendChatViaSocket: (state, action: PayloadAction<{message: IChatRequest; requestType: RequestType;}>) => {
-            state?.socketClient?.send(
-              `/app/chat/${action.payload.requestType}`,
-              {},
-              JSON.stringify(action.payload.message)
-            );
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -91,7 +79,7 @@ export const webSocketConnectionSlice = createSlice({
     }
 });
 
-export const { sendChatViaSocket } = webSocketConnectionSlice.actions;
+export const {  } = webSocketConnectionSlice.actions;
 
 export const selectSocketConnection = (state: RootState) => state.webSocketConnection as IWebSocketConnectionState;
 

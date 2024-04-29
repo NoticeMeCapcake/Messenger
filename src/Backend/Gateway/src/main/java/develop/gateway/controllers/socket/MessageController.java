@@ -1,6 +1,7 @@
 package develop.gateway.controllers.socket;
 
-import develop.gateway.dto.message.MessageWsRequestDTO;
+import develop.gateway.dto.ChatWsRequestDTO;
+import develop.gateway.dto.MessageWsRequestDTO;
 import develop.gateway.service.DtoMapper;
 import develop.gateway.service.BaseAction;
 import develop.gateway.service.MessageProducer;
@@ -27,31 +28,46 @@ public class MessageController {
         messageProducer = _messageProducer;
         dtoMapper = _dtoMapper;
     }
-    @MessageMapping("/message/create")
-    public void createMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
-        log.info(request.text());
-        log.info("session id " + sessionId);
-//        System.out.println(request.text());
-        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.create));
-    }
-    @MessageMapping("/message/get-all")
-    public void getAllMessages(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
-        log.info(request.text());
-        log.info("session id " + sessionId);
-//        System.out.println(request.text());
-        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.getAll));
-    }
-    @MessageMapping("/message/delete")
-    public void deleteMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
-        log.info(request.text());
-        log.info("session id " + sessionId);
-//        System.out.println(request.text());
-        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.delete));
-    }
 
-//    @Scheduled(fixedRate = 2000)
-//    public void sendGreetings() {
-//        template.convertAndSend("", new Greeting("Hello, world!"));
+//    TODO: refactor to split into type
+//    @MessageMapping("/message/create")
+//    public void createMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+//        log.info(request.text());
+//        log.info("session id " + sessionId);
+////        System.out.println(request.text());
+//        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.create));
+//    }
+//    @MessageMapping("/message/get-all")
+//    public void getAllMessages(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+//        log.info(request.text());
+//        log.info("session id " + sessionId);
+//
+//        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.getAll));
+//    }
+//    @MessageMapping("/message/delete")
+//    public void deleteMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+//        log.info(request.text());
+//        log.info("session id " + sessionId);
+////        System.out.println(request.text());
+//        messageProducer.sendMessage("test-process-message", dtoMapper.messageRequestToMessageInfo(sessionId, request, BaseAction.delete));
 //    }
 
+    @MessageMapping("/message")
+    public void processMessage(@Payload MessageWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+        log.info(request.text());
+        log.info("session id " + sessionId);
+
+        messageProducer.sendMessage(
+                "test-process-message",
+                dtoMapper.messageRequestToMessageInfo(sessionId, request)
+        );
+    }
+
+    @MessageMapping("/chat")
+    public void processChat(@Payload ChatWsRequestDTO request, @Header("simpSessionId") String sessionId) {
+        log.info(request.chatName());
+        log.info("session id " + sessionId);
+
+        messageProducer.sendMessage("test-process-chat", dtoMapper.ChatRequestToChatInfo(sessionId, request));
+    }
 }

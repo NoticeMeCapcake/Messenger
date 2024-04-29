@@ -9,16 +9,18 @@ import {SideMenu} from "@/components/SideMenu/SideMenu";
 import GroupSelector from "@/components/GroupSelector/GroupSelector";
 import Searcher from "@/components/Searcher/Searcher";
 import {useAppDispatch, useAppSelector} from '@/services/store/types/hooks';
-import {addMessage} from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
+import {addMessage, setCreatedTimeMessage, setIdMessage} from '@/services/store/slices/messagesSlice'; // Import bootstrap CSS
 import IMessageRequest from '@/dto/IMessageRequest';
 import {RequestType} from "@/dto/RequestType";
 import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
 import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
 import {connectToSocket} from "@/services/store/thunks/connectToSocket";
 import {selectSelectedChat} from "@/services/store/slices/selectedChatSlice";
-import {getMessagesFromChat} from "@/services/store/thunks/getMessagesFromChat";
-import {wait} from "next/dist/lib/wait";
 import CreateChatPopup from "@/components/CreateChatPopup/CreateChatPopup";
+import {IMessage} from "@stomp/stompjs";
+import IMessageResponse from "@/dto/IMessageResponse";
+import {NetworkConstants} from "@/networking/NetworkConstants";
+import {RootState} from "@/services/store/store";
 
 
 export default function AppLayout() {
@@ -57,6 +59,28 @@ export default function AppLayout() {
         // console.log("scrolled")
     }
 
+    const sendMsgCallback = (response: IMessage) => {
+        const body = JSON.parse(response.body) as IMessageResponse;
+
+        alert("New message id: " + body.id);
+
+        dispatch(setIdMessage({tempId: body.tempId, id: body.id}));
+        dispatch(setCreatedTimeMessage({id: body.id, createdAt: new Date((body.createdAt + NetworkConstants.timeZoneOffsetInSeconds) * 1000)}));
+    }
+
+    const sendMsgTimeoutCallback = (state: RootState, arg: any) => {
+        const message = arg as IMessageRequest;
+        state.messages.messages.map(
+            storedMsg => {
+                if (storedMsg.tempId === message.tempId) {
+                    if (!storedMsg.id) { //
+                        alert("sending message failure");
+                    }
+                }
+            }
+        );
+    }
+
     return (
       <main style={{width: "100vw", height: "100vh"}}>
         <div className="container-fluid" style={{backgroundColor:  "#1a181b"}}>
@@ -93,10 +117,10 @@ export default function AppLayout() {
                             <SendMessageForm scrollMessageListToBottom={scrollToNewMessage} adjustMessageListSize={adjustMessageListSize} initialText={''} sendMessage={(text: string): void => {
                                 // console.log(text)
                                 // console.log("in set text: ", messageListScrollAreaRef.current?.scrollHeight);
-                                const payload : IMessageRequest = {id: null, tempId: Math.floor(Math.random() * 10000).toString(), userId: currentUser.id, chatId: currentChat.id ?? "0", text: text};
+                                const payload : IMessageRequest = {id: null, tempId: Math.floor(Math.random() * 10000).toString(), userId: currentUser.id, chatId: currentChat.id ?? "0", text: text, action: RequestType.Create};
                                 dispatch(addMessage({id: null, tempId: payload.tempId ?? "0", chatId: currentChat.id ?? "0", senderId: currentUser.id, senderName: currentUser.username, text: text}))
                                 console.log("Will send: " + JSON.stringify(payload));
-                                dispatch(sendMessageViaSocket({message: payload, requestType: RequestType.Create}));
+                                dispatch(sendMessageViaSocket({message: payload, callback: sendMsgCallback, timeoutCallback: sendMsgTimeoutCallback}));
                             }} />
                     </div>
                 </div>
