@@ -27,6 +27,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
 }
 
 tasks.named('test') {

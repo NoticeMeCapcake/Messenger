@@ -48,9 +48,6 @@ export const messagesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder //TODO: add loading, error, read and sent states
-            .addCase(sendMessageViaSocket.pending, (state, action: PayloadAction<undefined, string, { arg: { message: IMessageRequest; requestType: RequestType; };}>) => {
-                // TODO: current message is sending
-            })
             .addCase(sendMessageViaSocket.fulfilled, (state, action: PayloadAction<IMessageRequest>) => {
                 // TODO: message is successfully loaded
             })

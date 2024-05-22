@@ -24,10 +24,7 @@ public class KafkaConsumerConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "gateway-service");
-//        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-//        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "develop.gateway.service.types.KafkaInfoResponse");
+
         var type = new TypeReference<KafkaInfoResponse<KafkaMessageDTO>>() {};
         JsonDeserializer<KafkaInfoResponse<KafkaMessageDTO>> deserializer = new JsonDeserializer<>(type);
 
@@ -46,12 +43,7 @@ public class KafkaConsumerConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "gateway-service");
-//        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-//        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-//        configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-//        configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-//        configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, MessageInfoResponse.class.getName());
+
         var type = new TypeReference<KafkaInfoResponse<KafkaChatDTO>>() {};
         return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), new JsonDeserializer<>(type));
     }

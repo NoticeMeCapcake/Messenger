@@ -1,16 +1,34 @@
 import React from 'react';
 import * as Popover from '@radix-ui/react-popover';
-import {MixerHorizontalIcon, Cross2Icon, PlusIcon} from '@radix-ui/react-icons';
+import {Cross2Icon, PlusIcon} from '@radix-ui/react-icons';
 import * as Tabs from "@radix-ui/react-tabs";
 import './style.css';
 import ChatType from "@/dto/ChatType";
+import IChatRequest from "@/dto/IChatRequest";
+import {useAppDispatch, useAppSelector} from "@/services/store/types/hooks";
+import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
+import {RequestType} from "@/dto/RequestType";
+import {sendChatViaSocket} from "@/services/store/thunks/sendChatViaSocket";
+import {IMessage} from "@stomp/stompjs";
+import {addChat, IChatInfo} from "@/services/store/slices/chatSlice";
+import {setSelectedChat} from "@/services/store/slices/selectedChatSlice";
+import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
+import IMessageRequest from "@/dto/IMessageRequest";
+import IMessageResponse from "@/dto/IMessageResponse";
+import {setMessages} from "@/services/store/slices/messagesSlice";
+import IChatMessage from "@/dto/IChatMessage";
+import {NetworkConstants} from "@/networking/NetworkConstants";
+import {resolveMessageCallbackByRequestType} from "@/services/store/thunks/helpers/resolveMessageCallbackByRequestType";
 
 const CreateChatPopup = () => {
+    const dispatch = useAppDispatch();
+
     const groupMapper: Map<string, ChatType> = new Map([
         ["Personal", ChatType.personal],
         ["Groups", ChatType.group],
         ["Channels", ChatType.channel]
     ]);
+    const currentUser = useAppSelector(selectCurrentUser);
     let chatType = ChatType.personal;
     const users = ["42"] as string[];
 
@@ -18,6 +36,57 @@ const CreateChatPopup = () => {
         chatType = _type;
     };
 
+    const convertResponseToMessages = (response: IMessageResponse[]) => {
+        const messages = [] as IChatMessage[];
+        response.map(message => {
+            const convertedMessage = {
+                id: message.id,
+                senderId: message.userId,
+                chatId: message.chatId,
+                createdAt: new Date((message.createdAt + NetworkConstants.timeZoneOffsetInSeconds) * 1000),
+                text: message.text,
+                senderName: "Template"
+            } as IChatMessage;
+            messages.push(convertedMessage);
+        });
+        return messages
+    }
+
+    const getMessagesByChatCallback = (response: IMessage) => {
+        const body = JSON.parse(response.body) as IMessageResponse[];
+
+        alert("Got messages " + body.length);
+
+        dispatch(setMessages(convertResponseToMessages(body)));
+    }
+
+    const createChatCallback = (response: IMessage) => {
+        const body = JSON.parse(response.body) as IChatInfo;
+
+        alert("New chat id: " + body.id);
+
+        dispatch(addChat(body));
+        dispatch(setSelectedChat(body));
+        const payload = {
+            action: RequestType.GetAll,
+            chatId: body.id,
+        } as IMessageRequest;
+        dispatch(sendMessageViaSocket({message: payload, callback: resolveMessageCallbackByRequestType(RequestType.GetAll, dispatch)}))
+    }
+
+    const onCreateHandle = () => {
+        const tempId = Math.floor(Math.random() * 10000).toString();
+        const payload = {
+            id: "0",
+            tempId: tempId,
+            chatName: "test chat" + [currentUser.id, "43"].join(" : ") + "+" + tempId,
+            userId: currentUser.id,
+            userIds: [currentUser.id, "43"],
+            type: chatType,
+            action: RequestType.Create
+        } as IChatRequest;
+        dispatch(sendChatViaSocket({message: payload, callback: createChatCallback}))
+    }
     return <div>
         <Popover.Root>
             <Popover.Trigger asChild>
@@ -72,7 +141,7 @@ const CreateChatPopup = () => {
 
                         </div>
                         <fieldset className="Fieldset">
-                            <button className="Button">
+                            <button className="Button" onClick={onCreateHandle}>
                                 Create
                             </button>
                         </fieldset>

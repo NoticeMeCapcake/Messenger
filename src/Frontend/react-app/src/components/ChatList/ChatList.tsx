@@ -1,9 +1,9 @@
 'use client';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import "./style.css";
 import {PersonIcon} from "@radix-ui/react-icons";
-import {selectChats} from '@/services/store/slices/chatSlice';
+import {IChatInfo, selectChats, setChats} from '@/services/store/slices/chatSlice';
 import {useAppDispatch, useAppSelector} from '@/services/store/types/hooks';
 import {selectSelectedChatType} from '@/services/store/slices/SelectedChatTypeSlice';
 import {selectSelectedChat, setSelectedChat} from '@/services/store/slices/selectedChatSlice';
@@ -14,12 +14,52 @@ import {setMessages} from "@/services/store/slices/messagesSlice";
 import IChatMessage from "@/dto/IChatMessage";
 import {NetworkConstants} from "@/networking/NetworkConstants";
 import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
+import {sendChatViaSocket} from "@/services/store/thunks/sendChatViaSocket";
+import IChatRequest from "@/dto/IChatRequest";
+import {selectCurrentUser} from "@/services/store/slices/currentUserSlice";
+import ChatType from "@/dto/ChatType";
 
 const ChatList = () => {
     const dispatch = useAppDispatch();
-    const chats = useAppSelector(selectChats);
+    const currentUser = useAppSelector(selectCurrentUser)
+    const chats = useAppSelector(selectChats)
+    // const chats = useAppSelector(selectChats);
     const selectedChat = useAppSelector(selectSelectedChat);
     const selectedChatType = useAppSelector(selectSelectedChatType);
+
+    const getAllChatsCallback = (response: IMessage) => {
+        const body = JSON.parse(response.body) as IChatInfo[];
+
+        console.log("In chats callback chats: " + JSON.stringify(chats));
+        console.log("In chats callback body: " + JSON.stringify(body));
+        console.log("In chats callback if: " + !body.every((chatInfo) => chats.includes(chatInfo))
+            || body.length === chats.length);
+
+
+        if (!body.every((chatInfo) => chats.includes(chatInfo))
+            || body.length === chats.length) {
+            alert("Got chats and reset " + body.length);
+
+            dispatch(setChats(body as IChatInfo[]))
+        }
+    }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const payload = {
+                id: "0",
+                tempId: "0",
+                chatName: "",
+                userId: currentUser.id,
+                userIds: [],
+                type: ChatType.group,
+                action: RequestType.GetAll
+            } as IChatRequest;
+            console.log("Interval")
+            dispatch(sendChatViaSocket({message: payload, callback: getAllChatsCallback}))
+        }, 15000);
+        return () => clearInterval(interval);
+    }, []);
 
     const convertResponseToMessages = (response: IMessageResponse[]) => {
         const messages = [] as IChatMessage[];

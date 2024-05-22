@@ -7,7 +7,7 @@ import mess.messagecontrolservice.dto.KafkaMessageDTO;
 import mess.messagecontrolservice.service.actionresolvers.ChatActionResolver;
 import mess.messagecontrolservice.service.actionresolvers.MessageActionResolver;
 import mess.messagecontrolservice.service.types.KafkaInfoRequest;
-import mess.messagecontrolservice.service.types.KafkaMessageInfoRequest;
+import mess.messagecontrolservice.service.types.KafkaInfoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -22,27 +22,27 @@ public class MessageConsumer {
 
 
     @KafkaListener(topics = "test-process-message", groupId = "message-control-service", containerFactory = "kafkaListenerContainerFactoryMessage")
-    public void listenMessage(KafkaMessageInfoRequest messageInfo) {
+    public void listenMessage(KafkaInfoRequest<KafkaMessageDTO> messageInfo) {
         log.info("Received message: " + messageInfo.messageDTO().text());
         var messageDTOs = (KafkaMessageDTO[]) messageActionResolver.resolveAction(messageInfo);
 
-        messageProducer.sendMessage("message-info-topic", new KafkaMessageInfoResponse(
+        messageProducer.sendMessage("message-info-topic", new KafkaInfoResponse<>(
                 messageInfo.action(),
                 messageDTOs,
                 messageInfo.sessionId()
         ));
     }
 
-//    @KafkaListener(topics = "test-process-chat", groupId = "message-control-service", containerFactory = "kafkaListenerContainerFactoryChat")
-//    public void listenChat(KafkaInfoRequest<KafkaChatDTO> messageInfo) {
-//        log.info("Received chat: " + messageInfo.messageDTO().chatName());
-//        var messageDTOs = (KafkaMessageDTO[]) chatActionResolver.resolveAction(messageInfo);
-//
-//        messageProducer.sendMessage("chat-info-topic", new KafkaMessageInfoResponse(
-//                messageInfo.action(),
-//                messageDTOs,
-//                messageInfo.sessionId()
-//        ));
-//    }
+    @KafkaListener(topics = "test-process-chat", groupId = "message-control-service", containerFactory = "kafkaListenerContainerFactoryChat")
+    public void listenChat(KafkaInfoRequest<KafkaChatDTO> messageInfo) {
+        log.info("Received chat: " + messageInfo.messageDTO().chatName());
+        var messageDTOs = (KafkaChatDTO[]) chatActionResolver.resolveAction(messageInfo);
+
+        messageProducer.sendMessage("chat-info-topic", new KafkaInfoResponse<>(
+                messageInfo.action(),
+                messageDTOs,
+                messageInfo.sessionId()
+        ));
+    }
 
 }

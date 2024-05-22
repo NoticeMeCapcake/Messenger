@@ -6,7 +6,7 @@ interface IChatRequest {
     tempId: string;
     chatName: string;
     userIds: string[];
-    userId: string[];
+    userId: string;
     type: ChatType;
     action: RequestType;
 }

@@ -9,8 +9,8 @@ export interface ISelectedChatState {
 
 const initialState = {
     selectedChat: {
-        id: null,
-        users: [],
+        id: "0",
+        usersIds: [],
         chatName: "",
         type: ChatType.personal
     }

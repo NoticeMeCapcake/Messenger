@@ -5,7 +5,6 @@ import mess.messagecontrolservice.dto.KafkaMessageDTO;
 import mess.messagecontrolservice.entity.MessageEntity;
 import mess.messagecontrolservice.repository.MessageRepository;
 import mess.messagecontrolservice.service.types.KafkaInfoRequest;
-import mess.messagecontrolservice.service.types.KafkaMessageInfoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ import java.util.function.Function;
 public class MessageActionResolver {
     private final MessageRepository repository;
 
-    public Object resolveAction(KafkaMessageInfoRequest messageInfo) {
+    public Object resolveAction(KafkaInfoRequest<KafkaMessageDTO> messageInfo) {
         Function<KafkaMessageDTO, Object> action = switch (messageInfo.action()) {
             case create -> this::doCreate;
             case get -> this::doGet;

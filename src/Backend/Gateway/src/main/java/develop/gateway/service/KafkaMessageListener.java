@@ -3,6 +3,7 @@ package develop.gateway.service;
 import develop.gateway.dto.KafkaChatDTO;
 import develop.gateway.dto.KafkaMessageDTO;
 import develop.gateway.service.types.KafkaInfoResponse;
+import develop.gateway.service.types.MessageResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -31,7 +32,7 @@ public class KafkaMessageListener {
                 : messageDto.id()) + "-user" + messageInfo.sessionId();
     }
 
-    private String resolveChatUrl(KafkaInfoResponse<KafkaMessageDTO> messageInfo) {
+    private String resolveChatUrl(KafkaInfoResponse<KafkaChatDTO> messageInfo) {
         var messageDto = messageInfo.messageDTO()[0];
 
         var action = messageInfo.action();
@@ -66,9 +67,9 @@ public class KafkaMessageListener {
         );
     }
 
-    @KafkaListener(topics = "chat-info-topic", groupId = "gateway-service", containerFactory = "kafkaListenerContainerFactoryMessage")
-    public void listenChat(KafkaInfoResponse<KafkaMessageDTO> messageInfo) {
-//        log.info("Received chat: {}", messageInfo.messageDTO()[0].chatName());
+    @KafkaListener(topics = "chat-info-topic", groupId = "gateway-service", containerFactory = "kafkaListenerContainerFactoryChat")
+    public void listenChat(KafkaInfoResponse<KafkaChatDTO> messageInfo) {
+        log.info("Received chat: {}", messageInfo.messageDTO()[0].chatName());
         var messageDto = messageInfo.messageDTO();
         template.convertAndSend(
                 resolveChatUrl(messageInfo),

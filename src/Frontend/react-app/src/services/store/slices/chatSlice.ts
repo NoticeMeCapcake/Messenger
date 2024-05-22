@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/services/store/store';
 import ChatType from '@/dto/ChatType';
+import {sendMessageViaSocket} from "@/services/store/thunks/sendMessageViaSocket";
+import IMessageRequest from "@/dto/IMessageRequest";
+import {sendChatViaSocket} from "@/services/store/thunks/sendChatViaSocket";
 
 export interface IChatInfo {
     id: string;
-    users: string[];
+    usersIds: string[];
     chatName: string;
     type: ChatType;
 }
@@ -16,12 +19,12 @@ export interface IChatInfoState {
 const initialState = {
     chats: [ {
         id: "42",
-        users: ["42", "21"],
+        usersIds: ["42", "21"],
         chatName: "templateChat",
         type: ChatType.personal
     }, {
         id: "43",
-        users: ["42", "22", "21"],
+        usersIds: ["42", "22", "21"],
         chatName: "templateChat2",
         type: ChatType.group
     } ]
@@ -35,6 +38,7 @@ export const chatSlice = createSlice({
             state.chats.push(action.payload);
         },
         setChats: (state, action: PayloadAction<IChatInfo[]>) => {
+            console.log("set Chats, " + JSON.stringify(action.payload))
             state.chats = action.payload;
         },
         removeChat: (state, action: PayloadAction<string>) => { // remove by id
@@ -48,6 +52,15 @@ export const chatSlice = createSlice({
               chat.id === action.payload.id ?
                 { ...chat, chatName: action.payload.chatName } : chat);
         }
+    },
+    extraReducers: (builder) => {
+        builder //TODO: add loading, error, read and sent states
+            .addCase(sendChatViaSocket.fulfilled, (state, action: PayloadAction<IMessageRequest>) => {
+                // TODO: message is successfully loaded
+            })
+            .addCase(sendChatViaSocket.rejected, (state, action) => {
+                // TODO: Encountered some error
+            })
     }
 });
 
